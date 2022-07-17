@@ -1,0 +1,4 @@
+dotmap
+aiohttp
+aiofiles
+pyrogram
