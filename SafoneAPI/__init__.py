@@ -7,7 +7,7 @@ from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "AsmSafone"
 
 
@@ -166,27 +166,30 @@ class SafoneAPI:
         """
         return await self._fetch("dare")
 
-    async def aninews(self):
+    async def aninews(self, limit: int = 10):
         """
         Returns An Object.
 
+                Parameters:
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("anime/news")
+        return await self._fetch("anime/news", limit=limit)
 
-    async def apps(self, query: str):
+    async def apps(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("apps", query=query)
+        return await self._fetch("apps", query=query, limit=limit)
 
     async def anime(self, query: str):
         """
@@ -224,17 +227,18 @@ class SafoneAPI:
         """
         return await self._fetch("anime/character", query=query)
 
-    async def npm(self, query: str):
+    async def npm(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("npm", query=query)
+        return await self._fetch("npm", query=query, limit=limit)
 
     async def logo(self, text: str):
         """
@@ -260,89 +264,96 @@ class SafoneAPI:
         """
         return await self._fetch("write", text=text, filename="write.png")
 
-    async def google(self, query: str):
+    async def google(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("google", query=query)
+        return await self._fetch("google", query=query, limit=limit)
 
-    async def youtube(self, query: str):
+    async def youtube(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("youtube", query=query)
+        return await self._fetch("youtube", query=query, limit=limit)
 
-    async def playlist(self, query: str):
+    async def playlist(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("playlist", query=query)
+        return await self._fetch("playlist", query=query, limit=limit)
 
-    async def wall(self, query: str):
+    async def wall(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("wall", query=query)
+        return await self._fetch("wall", query=query, limit=limit)
 
-    async def news(self, category: str = "all"):
+    async def news(self, category: str = "all", limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         category (str): News category [OPTIONAL]
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("news", category=category)
+        return await self._fetch("news", category=category, limit=limit)
 
-    async def reddit(self, query: str):
+    async def reddit(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("reddit", query=query)
+        return await self._fetch("reddit", query=query, limit=limit)
 
-    async def urban(self, query: str):
+    async def urban(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("urban", query=query)
+        return await self._fetch("urban", query=query, limit=limit)
 
     async def carbon(self, code: str, **kwargs):
         """
@@ -384,17 +395,18 @@ class SafoneAPI:
         """
         return await self._fetch("lyrics", title=title)
 
-    async def wiki(self, query: str):
+    async def wiki(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("wiki", query=query)
+        return await self._fetch("wiki", query=query, limit=limit)
 
     async def ipinfo(self, ip: str):
         """
@@ -516,17 +528,18 @@ class SafoneAPI:
         """
         return await self._fetch("proxy/" + type)
 
-    async def tmdb(self, query: str):
+    async def tmdb(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("tmdb", query=query)
+        return await self._fetch("tmdb", query=query, limit=limit)
 
     async def quotly(self, messages: List[Message]):
         """
@@ -541,7 +554,7 @@ class SafoneAPI:
         if not isinstance(messages, list):
             messages = [messages]
 
-        payload = {
+        json = {
             "type": "quote",
             "format": "webp",
             "backgroundColor": "#1b1429",
@@ -577,7 +590,7 @@ class SafoneAPI:
                         }
                         if message.from_user.photo
                         else "",
-                        "type": message.chat.type,
+                        "type": message.chat.type.name.lower(),
                         "name": self._get_name(message.from_user),
                     }
                     if not message.forward_from
@@ -594,7 +607,7 @@ class SafoneAPI:
                         }
                         if message.forward_from.photo
                         else "",
-                        "type": message.chat.type,
+                        "type": message.chat.type.name.lower(),
                         "name": self._get_name(message.forward_from),
                     },
                     "text": message.text if message.text else "",
@@ -615,7 +628,7 @@ class SafoneAPI:
                 for message in messages
             ],
         }
-        return await self._post_json("quotly", json=payload, filename="sticker.webp")
+        return await self._post_json("quotly", json=json, filename="sticker.webp")
 
     async def translate(self, text: str, target: str = "en"):
         """
@@ -642,17 +655,18 @@ class SafoneAPI:
         """
         return await self._fetch("pypi", query=query)
 
-    async def image(self, query: str):
+    async def image(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("image", query=query)
+        return await self._fetch("image", query=query, limit=limit)
 
     async def qrcode(self, text: str):
         """
@@ -690,38 +704,40 @@ class SafoneAPI:
         """
         return await self._fetch("spellcheck", text=text)
 
-    async def tgsticker(self, query: str):
+    async def tgsticker(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("tgsticker", query=query)
+        return await self._fetch("tgsticker", query=query, limit=limit)
 
-    async def torrent(self, query: str):
+    async def torrent(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("torrent", query=query)
+        return await self._fetch("torrent", query=query, limit=limit)
 
     async def webshot(self, url: str, width: int = 720, height: int = 1280, full: bool = False):
         """
         Returns An Object.
                 Parameters:
-                    url (str): The website url with http.
-                    width (int)[optional]: Width of webshot.
-                    height (int)[optional]: Height of webshot.
-                    full (bool)[optional]: Whether capture full page.
+                    url (str): The website url with http [OPTIONAL]
+                    width (int): Width of webshot [OPTIONAL]
+                    height (int): Height of webshot [OPTIONAL]
+                    full (bool): Whether capture full page [OPTIONAL]
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
@@ -743,9 +759,9 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    user (str)[optional]: New account username.
-                    email (int)[optional]: New account email.
-                    pswd (int)[optional]: New account password.
+                    user (str): New account username [OPTIONAL]
+                    email (int): New account email [OPTIONAL]
+                    pswd (int): New account password [OPTIONAL]
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
@@ -762,10 +778,10 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    language (str)[optional]: Programming language.
-                    code (str)[optional]: Code to execute.
-                    stdin (str)[optional]: STDIN for the code.
-                    args (list)[optional]: arguments to pass in cli.
+                    language (str): Programming language [OPTIONAL]
+                    code (str): Code to execute [OPTIONAL]
+                    stdin (str): STDIN for the code [OPTIONAL]
+                    args (list): arguments to pass in cli [OPTIONAL]
                 Returns:
                     Result object:
                         result.stdout, result.stdout `if language is passed`,
