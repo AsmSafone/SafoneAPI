@@ -492,10 +492,11 @@ class SafoneAPI:
                         Result object (str): Results which you can access with dot notation
 
         """
-        if not file and not url:
-            raise Exception("Please provide a file or url")
         if not file:
-            return await self._fetch("nsfw", image=url)
+            if url:
+                return await self._fetch("nsfw", image=url)
+            else:
+                raise Exception("Please provide a file or url")
         async with aiofiles.open(file, mode="rb") as f:
             file = await f.read()
         return await self._post_data("nsfw", data={"image": file})
@@ -510,7 +511,7 @@ class SafoneAPI:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("proxy/" + type)
+        return await self._fetch(f"proxy/{type}")
 
     async def tmdb(self, query: str):
         """
@@ -561,27 +562,8 @@ class SafoneAPI:
                     else message.from_user.id,
                     "avatar": True,
                     "from": {
-                        "id": message.from_user.id,
-                        "username": message.from_user.username
-                        if message.from_user.username
-                        else "",
-                        "photo": {
-                            "small_file_id": message.from_user.photo.small_file_id,
-                            "small_photo_unique_id": message.from_user.photo.small_photo_unique_id,
-                            "big_file_id": message.from_user.photo.big_file_id,
-                            "big_photo_unique_id": message.from_user.photo.big_photo_unique_id,
-                        }
-                        if message.from_user.photo
-                        else "",
-                        "type": message.chat.type,
-                        "name": self._get_name(message.from_user),
-                    }
-                    if not message.forward_from
-                    else {
                         "id": message.forward_from.id,
-                        "username": message.forward_from.username
-                        if message.forward_from.username
-                        else "",
+                        "username": message.forward_from.username or "",
                         "photo": {
                             "small_file_id": message.forward_from.photo.small_file_id,
                             "small_photo_unique_id": message.forward_from.photo.small_photo_unique_id,
@@ -592,8 +574,23 @@ class SafoneAPI:
                         else "",
                         "type": message.chat.type,
                         "name": self._get_name(message.forward_from),
+                    }
+                    if message.forward_from
+                    else {
+                        "id": message.from_user.id,
+                        "username": message.from_user.username or "",
+                        "photo": {
+                            "small_file_id": message.from_user.photo.small_file_id,
+                            "small_photo_unique_id": message.from_user.photo.small_photo_unique_id,
+                            "big_file_id": message.from_user.photo.big_file_id,
+                            "big_photo_unique_id": message.from_user.photo.big_photo_unique_id,
+                        }
+                        if message.from_user.photo
+                        else "",
+                        "type": message.chat.type,
+                        "name": self._get_name(message.from_user),
                     },
-                    "text": message.text if message.text else "",
+                    "text": message.text or "",
                     "replyMessage": (
                         {
                             "name": self._get_name(
@@ -611,6 +608,7 @@ class SafoneAPI:
                 for message in messages
             ],
         }
+
         return await self._post_json("quotly", json=payload, filename="sticker.webp")
 
     async def translate(self, text: str, target: str = "en"):
@@ -723,7 +721,7 @@ class SafoneAPI:
 
         """
         if not url.startswith("http"):
-            url = "http://" + url
+            url = f"http://{url}"
 
         json = dict(
                 url=url,

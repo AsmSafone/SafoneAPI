@@ -6,7 +6,7 @@ with open("README.md", encoding="utf8") as readme, open(
     "version.py", encoding="utf8") as version:
     long_description = readme.read()
     requirements = requirements.read().splitlines(keepends=False)
-    version = re.search(r'__version__ = "(.*?)"', version.read()).group(1)
+    version = re.search(r'__version__ = "(.*?)"', version.read())[1]
 
 setuptools.setup(
     name="SafoneAPI",
