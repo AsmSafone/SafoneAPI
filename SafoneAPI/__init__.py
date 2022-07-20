@@ -7,7 +7,7 @@ from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 __author__ = "AsmSafone"
 
 
@@ -133,15 +133,17 @@ class SafoneAPI:
         """
         return await self._fetch("meme", filename="meme.png")
 
-    async def quote(self):
+    async def quote(self, type: str = ""):
         """
         Returns An Object.
 
+                Parameters:
+                        type (str): Type of result (text/image) [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("quote")
+        return await self._fetch("quote", type=type)
 
     async def truth(self, category: str = ""):
         """
@@ -241,17 +243,18 @@ class SafoneAPI:
         """
         return await self._fetch("npm", query=query, limit=limit)
 
-    async def logo(self, text: str):
+    async def logo(self, text: str, color: str = ""):
         """
         Returns An Object.
 
                 Parameters:
                         text (str): Text to make logo
+                        color (str): Logo text color [OPTIONAL]
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
         """
-        return await self._fetch("logo", text=text, filename="logo.png")
+        return await self._fetch("logo", text=text, color=color, filename="logo.png")
 
     async def write(self, text: str):
         """
@@ -698,17 +701,18 @@ class SafoneAPI:
         """
         return await self._fetch("qrcode", text=text, filename="qrcode.png")
 
-    async def shortlink(self, url: str):
+    async def shortlink(self, url: str, domain: str = ""):
         """
         Returns An Object.
 
                 Parameters:
                         url (str): Long url
+                        domain (str): Domain [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("shortlink", url=url)
+        return await self._fetch("shortlink", url=url, domain=domain)
 
     async def spellcheck(self, text: str):
         """
