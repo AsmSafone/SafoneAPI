@@ -7,7 +7,7 @@ from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.2"
+__version__ = "1.0.4"
 __author__ = "AsmSafone"
 
 
@@ -24,12 +24,9 @@ class SafoneAPI:
     def _get_name(self, user: User) -> str:
         return f"{user.first_name} {user.last_name or ''}".rstrip()
 
-    def _get_file(self, data, filename) -> BytesIO:
-        try:
-            file = BytesIO(data)
-            file.name = filename
-        except Exception:
-            raise
+    def _get_file(self, bytes, filename) -> BytesIO:
+        file = BytesIO(bytes)
+        file.name = filename
         return file
 
     async def _fetch(self, route, timeout=30, filename=None, **params):
@@ -45,7 +42,7 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
         except TimeoutError:
-            raise Exception("Failed to communicate with the server.")
+            raise TimeoutError("Failed to communicate with api server :(")
         if filename is not None:
             return self._get_file(await resp.read(), filename)
         return DotMap(await resp.json())
@@ -63,7 +60,7 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
         except TimeoutError:
-            raise Exception("Failed to communicate with the server.")
+            raise TimeoutError("Failed to communicate with api server :(")
         if filename is not None:
             return self._get_file(await resp.read(), filename)
         return DotMap(await resp.json())
@@ -81,7 +78,7 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
         except TimeoutError:
-            raise Exception("Failed to communicate with the server.")
+            raise TimeoutError("Failed to communicate with api server :(")
         if filename is not None:
             return self._get_file(await resp.read(), filename)
         return DotMap(await resp.json())
@@ -91,7 +88,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
         return await self._fetch("advice")
@@ -101,7 +98,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
         return await self._fetch("bully")
@@ -111,7 +108,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
         return await self._fetch("fact")
@@ -121,7 +118,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
         return await self._fetch("joke")
@@ -131,7 +128,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
         return await self._fetch("meme", filename="meme.png")
@@ -141,30 +138,34 @@ class SafoneAPI:
         Returns An Object.
 
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
         return await self._fetch("quote")
 
-    async def truth(self):
+    async def truth(self, category: str = ""):
         """
         Returns An Object.
 
+                Parameters:
+                        category (str): Truth category [OPTIONAL]
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("truth")
+        return await self._fetch("truth", category=category)
 
-    async def dare(self):
+    async def dare(self, category: str = ""):
         """
         Returns An Object.
 
+                Parameters:
+                        category (str): Dare category [OPTIONAL]
                 Returns:
-                        result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("dare")
+        return await self._fetch("dare", category=category)
 
     async def aninews(self, limit: int = 10):
         """
@@ -316,7 +317,7 @@ class SafoneAPI:
         """
         return await self._fetch("wall", query=query, limit=limit)
 
-    async def news(self, category: str = "all", limit: int = 10):
+    async def news(self, category: str = "", limit: int = 10):
         """
         Returns An Object.
 
@@ -329,18 +330,20 @@ class SafoneAPI:
         """
         return await self._fetch("news", category=category, limit=limit)
 
-    async def reddit(self, query: str, limit: int = 10):
+    async def reddit(self, query: str, limit: int = 10, subreddit: list = [], nsfw: bool = False):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
                         limit (int): Limit the results [OPTIONAL]
+                        subreddit (list): Subreddits to include [OPTIONAL]
+                        nsfw (bool): Whether returns non safe content [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("reddit", query=query, limit=limit)
+        return await self._fetch("reddit", query=query, limit=limit, subreddit=subreddit, nsfw=nsfw)
 
     async def urban(self, query: str, limit: int = 10):
         """
@@ -371,17 +374,19 @@ class SafoneAPI:
 
         return await self._post_json("carbon", json=kwargs, filename="carbon.png")
 
-    async def chatbot(self, query: str, user_id: int = 0):
+    async def chatbot(self, query: str, user_id: int = 0, bot_name: str = "", bot_master: str = ""):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to compute
-                        user_id (int): Unique user_id. [OPTIONAL]
+                        user_id (int): Unique user_id [OPTIONAL]
+                        bot_name (str): Your bot_name [OPTIONAL]
+                        bot_master (str): Developer name [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
         """
-        return await self._fetch("chatbot", query=query, user_id=user_id)
+        return await self._fetch("chatbot", query=query, user_id=user_id, bot_name=bot_name, bot_master=bot_master)
 
     async def lyrics(self, title: str):
         """
@@ -413,7 +418,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Parameters:
-                        ip (str): Query to search
+                        ip (str): IP to search
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
@@ -425,7 +430,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Parameters:
-                        query (str): Query to search
+                        country (str): Country name
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
@@ -437,14 +442,14 @@ class SafoneAPI:
         Returns An Object.
 
                 Parameters:
-                        query (str): Query to search
+                        country (str): Country name
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
         return await self._fetch("countryinfo", country=country)
 
-    async def fakeinfo(self, gender: str = "male"):
+    async def fakeinfo(self, gender: str = ""):
         """
         Returns An Object.
 
@@ -482,17 +487,23 @@ class SafoneAPI:
         """
         return await self._fetch("currency", origin=origin, target=target, amount=amount)
 
-    async def spam_scan(self, text: list):
+    async def spam_scan(self, text: str = None, message: Message = None):
         """
         Returns An Object.
                 Parameters:
-                        text (str): Text to process.
+                        text (str): Text to process
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        if not isinstance(text, list):
-            text = [text]
+        if isinstance(message, Message):
+            text = message.text or message.caption or ""
+        elif isinstance(message, str):
+            text = message
+        elif isinstance(text, str):
+            text = text
+        else:
+            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
 
         json = dict(text=text)
         return await self._post_json("spam", json=json)
@@ -503,50 +514,56 @@ class SafoneAPI:
 
                 Parameters:
                         url (str): URL to scan (Optional)
-                        file (str): File path of an image to scan. (Optional)
+                        file (str): File path of an image to scan (Optional)
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
         if not file and not url:
-            raise Exception("Please provide a file or url")
+            raise InvalidRequest("Please provide a file path or URL")
         if not file:
             return await self._fetch("nsfw", image=url)
         async with aiofiles.open(file, mode="rb") as f:
             file = await f.read()
         return await self._post_data("nsfw", data={"image": file})
 
-    async def proxy(self, type: str):
+    async def proxy(self, type: str, country: str = "", limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
-                        type (str): Type of proxy, one of: http, socks4, socks5
+                        type (str): Type of proxy (http/socks4/socks5)
+                        country (str): Country code [OPTIONAL]
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("proxy/" + type)
+        return await self._fetch("proxy/" + type, country=country, limit=limit)
 
-    async def tmdb(self, query: str, limit: int = 10):
+    async def tmdb(self, query: str = "", limit: int = 10, tmdb_id: int = 0):
         """
         Returns An Object.
 
                 Parameters:
                         query (str): Query to search
                         limit (int): Limit the results [OPTIONAL]
+                        tmdb_id (str): Specific TMDb ID [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("tmdb", query=query, limit=limit)
+        if not query and not tmdb_id:
+            raise InvalidRequest("Please provide a query or TMDb ID")
+
+        return await self._fetch("tmdb", query=query, limit=limit, tmdb_id=tmdb_id)
 
     async def quotly(self, messages: List[Message]):
         """
         Returns An Object.
 
                 Parameters:
-                        messages ([Message]): Generate quotly stickers.
+                        messages (List[Message]): List of ~pyrogram.types.Message
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
@@ -630,18 +647,19 @@ class SafoneAPI:
         }
         return await self._post_json("quotly", json=json, filename="sticker.webp")
 
-    async def translate(self, text: str, target: str = "en"):
+    async def translate(self, text: str, origin: str = "", target: str = "en"):
         """
         Returns An Object.
 
                 Parameters:
                         text (str): Text to translate
+                        origin (str): Language code of origin language [OPTIONAL]
                         target (str): Language code of target language [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("translate", text=text, target=target)
+        return await self._fetch("translate", text=text, origin=origin, target=target)
 
     async def pypi(self, query: str):
         """
@@ -734,7 +752,7 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    url (str): The website url with http [OPTIONAL]
+                    url (str): The website url with http
                     width (int): Width of webshot [OPTIONAL]
                     height (int): Height of webshot [OPTIONAL]
                     full (bool): Whether capture full page [OPTIONAL]
@@ -784,7 +802,7 @@ class SafoneAPI:
                     args (list): arguments to pass in cli [OPTIONAL]
                 Returns:
                     Result object:
-                        result.stdout, result.stdout `if language is passed`,
+                        result.output, result.output `if language is passed`,
                         else a list of supported languages is returned
         """
         if not language:
