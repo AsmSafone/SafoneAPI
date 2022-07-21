@@ -9,7 +9,7 @@ from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.9"
+__version__ = "1.0.10"
 __author__ = "AsmSafone"
 
 
@@ -23,11 +23,11 @@ class SafoneAPI:
         self.api = "https://api.safone.tech/"
         self.session = aiohttp.ClientSession
 
+    def _get_fn(self, type: str) -> str:
+        return f"{str(round(time.time()))}.{type}".rstrip()
+
     def _get_name(self, user: User) -> str:
         return f"{user.first_name} {user.last_name or ''}".rstrip()
-
-    def _get_fname(self, type: str) -> str:
-        return f"{str(round(time.time()))}.{type.split('/')[1]}".rstrip()
 
     async def _parse(self, response):
         try:
@@ -39,12 +39,14 @@ class SafoneAPI:
         if response.type:
             types = ["jpg", "jpeg", "png", "gif", "webp"]
             try:
-                if response.type.split('/')[1] in types:
-                    img_ = response.image.encode("utf-8")
-                    response = BytesIO(b64decode(img_))
-                    response.name = self._get_fname(response.type)
+                type = response.type.split('/')[1]
             except IndexError:
                 pass
+            else:
+                if type in types:
+                    image = response.image.encode("utf-8")
+                    response = BytesIO(b64decode(image))
+                    response.name = self._get_fn(type)
         return response
 
     async def _fetch(self, route, timeout=30, **params):
@@ -779,6 +781,19 @@ class SafoneAPI:
 
         """
         return await self._fetch("shortlink", url=url, domain=domain)
+
+    async def bypasslink(self, url: str, domain: str = ""):
+        """
+        Returns An Object.
+
+                Parameters:
+                        url (str): Short url
+                        domain (str): Domain [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("bypasslink", url=url, domain=domain)
 
     async def spellcheck(self, text: str):
         """

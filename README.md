@@ -81,6 +81,7 @@ asyncio.run(main())
 - Spotify Account Creator
 - Telegram Sticker Search
 - Short Link Generator
+- Short Link Bypasser
 - Torrent Search
 - Truth or Dare
 - Udemy Discount Course
