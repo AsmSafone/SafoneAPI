@@ -1,13 +1,15 @@
+import time
 import aiohttp
 import aiofiles
 from io import BytesIO
 from typing import List
 from dotmap import DotMap
+from base64 import b64decode
 from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.5"
+__version__ = "1.0.7"
 __author__ = "AsmSafone"
 
 
@@ -24,12 +26,27 @@ class SafoneAPI:
     def _get_name(self, user: User) -> str:
         return f"{user.first_name} {user.last_name or ''}".rstrip()
 
-    def _get_file(self, bytes, filename) -> BytesIO:
-        file = BytesIO(bytes)
-        file.name = filename
-        return file
+    def _get_fname(self, format: str) -> str:
+        return f"{str(round(time.time()))}.{format}".rstrip()
 
-    async def _fetch(self, route, timeout=30, filename=None, **params):
+    async def _parse(self, response):
+        try:
+            response = DotMap(await response.json())
+        except Exception:
+            raise InvalidContent(
+                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
+            )
+        if response.type:
+            try:
+                type = response.type.split('/')[1]
+            except IndexError:
+                type = None
+            if type and type in ["jpg", "jpeg", "png", "gif", "webp"]:
+                response = BytesIO(b64decode(response.image))
+                response.name = self._get_fname(type)
+        return response
+
+    async def _fetch(self, route, timeout=30, **params):
         try:
             async with self.session() as client:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
@@ -42,12 +59,10 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
         except TimeoutError:
-            raise TimeoutError("Failed to communicate with api server :(")
-        if filename is not None:
-            return self._get_file(await resp.read(), filename)
-        return DotMap(await resp.json())
+            raise TimeoutError("Failed to communicate with api server.")
+        return await self._parse(resp)
 
-    async def _post_data(self, route, data, timeout=30, filename=None):
+    async def _post_data(self, route, data, timeout=30):
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
@@ -60,12 +75,10 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
         except TimeoutError:
-            raise TimeoutError("Failed to communicate with api server :(")
-        if filename is not None:
-            return self._get_file(await resp.read(), filename)
-        return DotMap(await resp.json())
+            raise TimeoutError("Failed to communicate with api server.")
+        return await self._parse(resp)
 
-    async def _post_json(self, route, json, timeout=30, filename=None):
+    async def _post_json(self, route, json, timeout=30):
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
@@ -78,10 +91,8 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
         except TimeoutError:
-            raise TimeoutError("Failed to communicate with api server :(")
-        if filename is not None:
-            return self._get_file(await resp.read(), filename)
-        return DotMap(await resp.json())
+            raise TimeoutError("Failed to communicate with api server.")
+        return await self._parse(resp)
 
     async def advice(self):
         """
@@ -131,7 +142,7 @@ class SafoneAPI:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("meme", filename="meme.png")
+        return await self._fetch("meme")
 
     async def quote(self, type: str = ""):
         """
@@ -168,18 +179,6 @@ class SafoneAPI:
 
         """
         return await self._fetch("dare", category=category)
-
-    async def aninews(self, limit: int = 10):
-        """
-        Returns An Object.
-
-                Parameters:
-                        limit (int): Limit the results [OPTIONAL]
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-
-        """
-        return await self._fetch("anime/news", limit=limit)
 
     async def apps(self, query: str, limit: int = 10):
         """
@@ -230,6 +229,32 @@ class SafoneAPI:
         """
         return await self._fetch("anime/character", query=query)
 
+    async def anime_news(self, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("anime/news", limit=limit)
+
+    async def anime_pics(self, type: str, nsfw: bool = False):
+        """
+        Returns An Object.
+
+                Parameters:
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        if nsfw:
+            return await self._fetch("anime/nsfw/" + type)
+        return await self._fetch("anime/sfw/" + type)
+
     async def npm(self, query: str, limit: int = 10):
         """
         Returns An Object.
@@ -254,7 +279,7 @@ class SafoneAPI:
                         Result object (BytesIO): Results which you can access with filename
 
         """
-        return await self._fetch("logo", text=text, color=color, filename="logo.png")
+        return await self._fetch("logo", text=text, color=color)
 
     async def write(self, text: str):
         """
@@ -266,7 +291,22 @@ class SafoneAPI:
                         Result object (BytesIO): Results which you can access with filename
 
         """
-        return await self._fetch("write", text=text, filename="write.png")
+        return await self._fetch("write", text=text)
+
+    async def udemy(self, type: str, page: int = 1, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        type (str): Type of course
+                         one of: (discount/freebies/idcoupons/coursevania/discudemy/tutorialbar/real_discount)
+                        page (int): Page no. to parse [OPTIONAL]
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("udemy/" + type, page=page, limit=limit)
 
     async def google(self, query: str, limit: int = 10):
         """
@@ -280,6 +320,19 @@ class SafoneAPI:
 
         """
         return await self._fetch("google", query=query, limit=limit)
+
+    async def github(self, query: str, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("github", query=query, limit=limit)
 
     async def youtube(self, query: str, limit: int = 10):
         """
@@ -375,7 +428,7 @@ class SafoneAPI:
         if "code" not in kwargs:
             kwargs["code"] = code
 
-        return await self._post_json("carbon", json=kwargs, filename="carbon.png")
+        return await self._post_json("carbon", json=kwargs)
 
     async def chatbot(self, query: str, user_id: int = 0, bot_name: str = "", bot_master: str = ""):
         """
@@ -501,11 +554,7 @@ class SafoneAPI:
         """
         if isinstance(message, Message):
             text = message.text or message.caption or ""
-        elif isinstance(message, str):
-            text = message
-        elif isinstance(text, str):
-            text = text
-        else:
+        if not text:
             raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
 
         json = dict(text=text)
@@ -648,7 +697,7 @@ class SafoneAPI:
                 for message in messages
             ],
         }
-        return await self._post_json("quotly", json=json, filename="sticker.webp")
+        return await self._post_json("quotly", json=json)
 
     async def translate(self, text: str, origin: str = "", target: str = "en"):
         """
@@ -663,6 +712,19 @@ class SafoneAPI:
 
         """
         return await self._fetch("translate", text=text, origin=origin, target=target)
+
+    async def figlet(self, text: str, font: str = ""):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Some text
+                        font (str): Font name [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("figlet", text=text, font=font)
 
     async def pypi(self, query: str):
         """
@@ -699,7 +761,7 @@ class SafoneAPI:
                         Result object (BytesIO): Results which you can access with filename
 
         """
-        return await self._fetch("qrcode", text=text, filename="qrcode.png")
+        return await self._fetch("qrcode", text=text)
 
     async def shortlink(self, url: str, domain: str = ""):
         """
@@ -775,7 +837,7 @@ class SafoneAPI:
                 full=full,
                 scale=1,
             )
-        return await self._post_json("webshot", json=json, filename="webshot.png")
+        return await self._post_json("webshot", json=json)
 
     async def spotify(self, user: str = None, email: str = None, pswd: str = None):
         """
@@ -822,7 +884,13 @@ class SafoneAPI:
 
 
 class InvalidRequest(Exception):
+    """Incase request params is invalid"""
+    pass
+
+class InvalidContent(Exception):
+    """Incase returned content is invalid"""
     pass
 
 class GenericApiError(Exception):
+    """Incase api returns validation error"""
     pass

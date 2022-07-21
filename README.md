@@ -40,7 +40,10 @@ asyncio.run(main())
 
 - AI Chatbot
 - Apps Search
-- Anime (SFW & NSFW)
+- Anime Search
+- Manga Search
+- Character Search
+- Anime Pics (SFW & NSFW)
 - Code Executor (Piston)
 - Spam Detector
 - NSFW Detector
@@ -56,13 +59,17 @@ asyncio.run(main())
 - Random Quote
 - Spell Checker
 - Google Search
+- Github Search
+- Figlet Generator
 - Google Translator
 - Reddit Search
 - Currency Converter
 - Internet Acronyms
 - Urban Dictionary Search
 - Fake Info Generator
-- Info Searcher
+- Ip Info Search
+- Covid Info Search
+- Country Info Search
 - Image Search
 - Logo Maker
 - Proxy Finder
