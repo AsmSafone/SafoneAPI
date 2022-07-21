@@ -9,7 +9,7 @@ from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.7"
+__version__ = "1.0.9"
 __author__ = "AsmSafone"
 
 
@@ -26,24 +26,25 @@ class SafoneAPI:
     def _get_name(self, user: User) -> str:
         return f"{user.first_name} {user.last_name or ''}".rstrip()
 
-    def _get_fname(self, format: str) -> str:
-        return f"{str(round(time.time()))}.{format}".rstrip()
+    def _get_fname(self, type: str) -> str:
+        return f"{str(round(time.time()))}.{type.split('/')[1]}".rstrip()
 
     async def _parse(self, response):
         try:
-            response = DotMap(await response.json())
+            response = DotMap(response)
         except Exception:
             raise InvalidContent(
                 "Invalid Content-Type, Please report this: https://api.safone.tech/report"
             )
         if response.type:
+            types = ["jpg", "jpeg", "png", "gif", "webp"]
             try:
-                type = response.type.split('/')[1]
+                if response.type.split('/')[1] in types:
+                    img_ = response.image.encode("utf-8")
+                    response = BytesIO(b64decode(img_))
+                    response.name = self._get_fname(response.type)
             except IndexError:
-                type = None
-            if type and type in ["jpg", "jpeg", "png", "gif", "webp"]:
-                response = BytesIO(b64decode(response.image))
-                response.name = self._get_fname(type)
+                pass
         return response
 
     async def _fetch(self, route, timeout=30, **params):
@@ -58,9 +59,10 @@ class SafoneAPI:
                     raise GenericApiError(
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
+                response = await resp.json()
         except TimeoutError:
             raise TimeoutError("Failed to communicate with api server.")
-        return await self._parse(resp)
+        return await self._parse(response)
 
     async def _post_data(self, route, data, timeout=30):
         try:
@@ -74,9 +76,10 @@ class SafoneAPI:
                     raise GenericApiError(
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
+                response = await resp.json()
         except TimeoutError:
             raise TimeoutError("Failed to communicate with api server.")
-        return await self._parse(resp)
+        return await self._parse(response)
 
     async def _post_json(self, route, json, timeout=30):
         try:
@@ -90,9 +93,10 @@ class SafoneAPI:
                     raise GenericApiError(
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
+                response = await resp.json()
         except TimeoutError:
             raise TimeoutError("Failed to communicate with api server.")
-        return await self._parse(resp)
+        return await self._parse(response)
 
     async def advice(self):
         """
