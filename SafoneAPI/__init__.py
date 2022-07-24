@@ -9,7 +9,7 @@ from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.10"
+__version__ = "1.0.11"
 __author__ = "AsmSafone"
 
 
@@ -29,24 +29,12 @@ class SafoneAPI:
     def _get_name(self, user: User) -> str:
         return f"{user.first_name} {user.last_name or ''}".rstrip()
 
-    async def _parse(self, response):
-        try:
-            response = DotMap(response)
-        except Exception:
-            raise InvalidContent(
-                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
-            )
-        if response.type:
-            types = ["jpg", "jpeg", "png", "gif", "webp"]
-            try:
-                type = response.type.split('/')[1]
-            except IndexError:
-                pass
-            else:
-                if type in types:
-                    image = response.image.encode("utf-8")
-                    response = BytesIO(b64decode(image))
-                    response.name = self._get_fn(type)
+    def _parse_result(self, response):
+        type = response.get("type")
+        response = DotMap(response)
+        if type and "/" in type:
+            response = BytesIO(b64decode(response.image.encode("utf-8")))
+            response.name = self._get_fn(type.split("/")[1])
         return response
 
     async def _fetch(self, route, timeout=30, **params):
@@ -64,7 +52,11 @@ class SafoneAPI:
                 response = await resp.json()
         except TimeoutError:
             raise TimeoutError("Failed to communicate with api server.")
-        return await self._parse(response)
+        except Exception:
+            raise InvalidContent(
+                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
+            )
+        return self._parse_result(response)
 
     async def _post_data(self, route, data, timeout=30):
         try:
@@ -81,7 +73,11 @@ class SafoneAPI:
                 response = await resp.json()
         except TimeoutError:
             raise TimeoutError("Failed to communicate with api server.")
-        return await self._parse(response)
+        except Exception:
+            raise InvalidContent(
+                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
+            )
+        return self._parse_result(response)
 
     async def _post_json(self, route, json, timeout=30):
         try:
@@ -98,7 +94,11 @@ class SafoneAPI:
                 response = await resp.json()
         except TimeoutError:
             raise TimeoutError("Failed to communicate with api server.")
-        return await self._parse(response)
+        except Exception:
+            raise InvalidContent(
+                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
+            )
+        return self._parse_result(response)
 
     async def advice(self):
         """
@@ -252,9 +252,10 @@ class SafoneAPI:
         Returns An Object.
 
                 Parameters:
-                        limit (int): Limit the results [OPTIONAL]
+                        type (str): Anime content type
+                        nsfw (bool): Whether include nonsafe content [OPTIONAL]
                 Returns:
-                        Result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with filename
 
         """
         if nsfw:
@@ -305,8 +306,7 @@ class SafoneAPI:
 
                 Parameters:
                         type (str): Type of course
-                         one of: (discount/freebies/idcoupons/coursevania/discudemy/tutorialbar/real_discount)
-                        page (int): Page no. to parse [OPTIONAL]
+                        page (int): Page no to parse [OPTIONAL]
                         limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
@@ -400,7 +400,7 @@ class SafoneAPI:
                         query (str): Query to search
                         limit (int): Limit the results [OPTIONAL]
                         subreddit (list): Subreddits to include [OPTIONAL]
-                        nsfw (bool): Whether returns non safe content [OPTIONAL]
+                        nsfw (bool): Whether include nonsafe content [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
@@ -571,8 +571,8 @@ class SafoneAPI:
         Returns An Object.
 
                 Parameters:
-                        url (str): URL to scan (Optional)
-                        file (str): File path of an image to scan (Optional)
+                        url (str): URL to scan [OPTIONAL]
+                        file (str): File path of an image to scan [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
@@ -590,7 +590,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Parameters:
-                        type (str): Type of proxy (http/socks4/socks5)
+                        type (str): Type of proxy
                         country (str): Country code [OPTIONAL]
                         limit (int): Limit the results [OPTIONAL]
                 Returns:
@@ -833,7 +833,20 @@ class SafoneAPI:
         """
         return await self._fetch("torrent", query=query, limit=limit)
 
-    async def webshot(self, url: str, width: int = 720, height: int = 1280, full: bool = False):
+    async def stackoverflow(self, query: str, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("stackoverflow", query=query, limit=limit)
+
+    async def webshot(self, url: str, width: int = 1920, height: int = 1080, full: bool = False):
         """
         Returns An Object.
                 Parameters:
@@ -852,9 +865,7 @@ class SafoneAPI:
                 url=url,
                 width=width,
                 height=height,
-                format="jpeg",
                 full=full,
-                scale=1,
             )
         return await self._post_json("webshot", json=json)
 
@@ -900,6 +911,33 @@ class SafoneAPI:
                 args=args,
             )
         return await self._post_json("execute", json=json)
+
+    async def telegraph(self, file: str = None, title: str = None, content: str = None, author_name: str = None, author_url: str = None):
+        """
+        Returns An Object.
+                Parameters:
+                    file (str): File path of a media [OPTIONAL]
+                    title (str): Page title [OPTIONAL]
+                    content (str): Page content [OPTIONAL]
+                    author_name (str): Page author name [OPTIONAL]
+                    author_url (str): Page author url [OPTIONAL]
+                Returns:
+                    Result object (str): Results which you can access with dot notation
+
+        """
+        if not file and not title:
+            raise InvalidRequest("Please provide a file path or title")
+        if not file:
+            json = dict(
+                title=title,
+                content=content,
+                author_name=author_name,
+                author_url=author_url,
+            )
+            return await self._post_json("telegraph/text", json=json)
+        async with aiofiles.open(file, mode="rb") as f:
+            file = await f.read()
+        return await self._post_data("telegraph/media", data={"media": file})
 
 
 class InvalidRequest(Exception):

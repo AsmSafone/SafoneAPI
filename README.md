@@ -62,7 +62,6 @@ asyncio.run(main())
 - Github Search
 - Figlet Generator
 - Google Translator
-- Reddit Search
 - Currency Converter
 - Internet Acronyms
 - Urban Dictionary Search
@@ -71,6 +70,7 @@ asyncio.run(main())
 - Covid Info Search
 - Country Info Search
 - Image Search
+- Reddit Search
 - Logo Maker
 - Proxy Finder
 - TMDb Search
@@ -89,7 +89,10 @@ asyncio.run(main())
 - Wikipedia Search
 - YouTube Search
 - Playlist Search
-- Webshot Screenshot
+- Stackoverflow Search
+- Website Screenshot
+- Telegraph Pasting
+- Telegraph File Uploader
 
 ## Note
 
