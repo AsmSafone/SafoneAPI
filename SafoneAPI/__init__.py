@@ -9,7 +9,7 @@ from pyrogram.types import Message, User
 from asyncio.exceptions import TimeoutError
 
 
-__version__ = "1.0.11"
+__version__ = "1.0.12"
 __author__ = "AsmSafone"
 
 
@@ -51,10 +51,12 @@ class SafoneAPI:
                     )
                 response = await resp.json()
         except TimeoutError:
-            raise TimeoutError("Failed to communicate with api server.")
-        except Exception:
+            raise TimeoutError(
+                "Internal Server Timeout, Failed to communicate with api server"
+            )
+        except aiohttp.ContentTypeError:
             raise InvalidContent(
-                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
+                "Invalid Content Type, Please report this: https://api.safone.tech/report"
             )
         return self._parse_result(response)
 
@@ -72,10 +74,12 @@ class SafoneAPI:
                     )
                 response = await resp.json()
         except TimeoutError:
-            raise TimeoutError("Failed to communicate with api server.")
-        except Exception:
+            raise TimeoutError(
+                "Internal Server Timeout, Failed to communicate with api server"
+            )
+        except aiohttp.ContentTypeError:
             raise InvalidContent(
-                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
+                "Invalid Content Type, Please report this: https://api.safone.tech/report"
             )
         return self._parse_result(response)
 
@@ -93,10 +97,12 @@ class SafoneAPI:
                     )
                 response = await resp.json()
         except TimeoutError:
-            raise TimeoutError("Failed to communicate with api server.")
-        except Exception:
+            raise TimeoutError(
+                "Internal Server Timeout, Failed to communicate with api server"
+            )
+        except aiohttp.ContentTypeError:
             raise InvalidContent(
-                "Invalid Content-Type, Please report this: https://api.safone.tech/report"
+                "Invalid Content Type, Please report this: https://api.safone.tech/report"
             )
         return self._parse_result(response)
 
@@ -450,17 +456,17 @@ class SafoneAPI:
         """
         return await self._fetch("chatbot", query=query, user_id=user_id, bot_name=bot_name, bot_master=bot_master)
 
-    async def lyrics(self, title: str):
+    async def lyrics(self, query: str):
         """
         Returns An Object.
 
                 Parameters:
-                        title (str): Title of the song
+                        query (str): Query to search
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("lyrics", title=title)
+        return await self._fetch("lyrics", query=query)
 
     async def wiki(self, query: str, limit: int = 10):
         """
