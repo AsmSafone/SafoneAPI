@@ -13,7 +13,7 @@ def read(fname, version=False):
 setuptools.setup(
     name="SafoneAPI",
     packages=setuptools.find_packages(),
-    version=read("SafoneAPI/__init__.py", version=True),
+    version=read("SafoneAPI/version.py", version=True),
     license="MIT",
     description="Asynchronous Python Wrapper For SafoneAPI",
     long_description=read("README.md"),
@@ -25,6 +25,7 @@ setuptools.setup(
     install_requires=["dotmap", "aiohttp", "aiofiles", "pyrogram"],
     classifiers=[
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -33,5 +34,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Intended Audience :: Developers",
     ],
-    python_requires=">3.7, <3.11",
+    python_requires=">3.6, <3.11",
 )

@@ -1,4 +1,5 @@
 import time
+import asyncio
 import aiohttp
 import aiofiles
 from io import BytesIO
@@ -6,11 +7,6 @@ from typing import List
 from dotmap import DotMap
 from base64 import b64decode
 from pyrogram.types import Message, User
-from asyncio.exceptions import TimeoutError
-
-
-__version__ = "1.0.12"
-__author__ = "AsmSafone"
 
 
 class SafoneAPI:
@@ -50,7 +46,7 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
-        except TimeoutError:
+        except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
             )
@@ -73,7 +69,7 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
-        except TimeoutError:
+        except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
             )
@@ -96,7 +92,7 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
-        except TimeoutError:
+        except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
             )
@@ -115,6 +111,16 @@ class SafoneAPI:
 
         """
         return await self._fetch("advice")
+
+    async def astronomy(self):
+        """
+        Returns An Object.
+
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("astronomy")
 
     async def bully(self):
         """
@@ -425,6 +431,45 @@ class SafoneAPI:
 
         """
         return await self._fetch("urban", query=query, limit=limit)
+
+    async def unsplash(self, query: str, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("unsplash", query=query, limit=limit)
+
+    async def weather(self, city: str, type: str = "text"):
+        """
+        Returns An Object.
+
+                Parameters:
+                        city (str): Name of the city
+                        type (str): Type of result (text/image) [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("weather", city=city, type=type)
+
+    async def dictionary(self, query: str, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("dictionary", query=query, limit=limit)
 
     async def carbon(self, code: str, **kwargs):
         """
@@ -800,6 +845,18 @@ class SafoneAPI:
 
         """
         return await self._fetch("bypasslink", url=url, domain=domain)
+
+    async def skcheck(self, key: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        key (str): Stripe key
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("skcheck", key=key)
 
     async def spellcheck(self, text: str):
         """
