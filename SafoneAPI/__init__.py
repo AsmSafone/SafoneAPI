@@ -987,15 +987,34 @@ class SafoneAPI:
             )
         return await self._post_json("webshot", json=json)
 
+    async def paste(self, content: str, title: str = None, format: bool = False):
+        """
+        Returns An Object.
+                Parameters:
+                    content (str): Content to paste
+                    title (str): Title of the page [OPTIONAL]
+                    format (bool): Whether paste in code format [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+
+        json = dict(
+                content=content,
+                title=title,
+                code=format,
+            )
+        return await self._post_json("paste", json=json)
+
     async def spotify(self, user: str = None, email: str = None, pswd: str = None):
         """
         Returns An Object.
                 Parameters:
                     user (str): New account username [OPTIONAL]
-                    email (int): New account email [OPTIONAL]
-                    pswd (int): New account password [OPTIONAL]
+                    email (str): New account email [OPTIONAL]
+                    pswd (str|int): New account password [OPTIONAL]
                 Returns:
-                        Result object (BytesIO): Results which you can access with filename
+                        Result object (str): Results which you can access with dot notation
 
         """
 
