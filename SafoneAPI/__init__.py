@@ -523,6 +523,26 @@ class SafoneAPI:
 
         return await self._post_json("carbon", json=kwargs)
 
+    async def rayso(self, code: str, title: str = "", theme: str = None, dark_mode: bool = False):
+        """
+        Returns An Object.
+                Parameters:
+                    code (str): Rayso content [OPTIONAL]
+                    title (str): Rayso image title [OPTIONAL]
+                    theme (str): Rayso theme name [OPTIONAL]
+                    dark_mode (bool): Whether dark mode [OPTIONAL]
+                Returns:
+                    Result object (str): Results which you can access with dot notation
+
+        """
+        json = dict(
+                code=code,
+                title=title,
+                theme=theme,
+                dark_mode=dark_mode,
+            )
+        return await self._post_json("rayso", json=json)
+
     async def chatbot(self, query: str, user_id: int = 0, bot_name: str = "", bot_master: str = ""):
         """
         Returns An Object.
