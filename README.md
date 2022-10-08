@@ -38,6 +38,7 @@ asyncio.run(main())
 
 ## List of APIs
 
+- Astronomy
 - AI Chatbot
 - Apps Search
 - Anime Search
@@ -49,6 +50,7 @@ asyncio.run(main())
 - NSFW Detector
 - Quotly Sticker
 - Carbon Imager
+- Rayso Imager
 - Anime News
 - Global News
 - Note Writer
@@ -64,6 +66,7 @@ asyncio.run(main())
 - Google Translator
 - Currency Converter
 - Internet Acronyms
+- Dictionary Search
 - Urban Dictionary Search
 - Fake Info Generator
 - Ip Info Search
@@ -72,6 +75,7 @@ asyncio.run(main())
 - Image Search
 - Reddit Search
 - Logo Maker
+- OCR Reader
 - Proxy Finder
 - TMDb Search
 - Lyrics Search
@@ -87,10 +91,15 @@ asyncio.run(main())
 - Udemy Discount Course
 - Wallpaper Search
 - Wikipedia Search
+- Weather Info
+- Ubuntu Search
+- Unsplash Search
 - YouTube Search
 - Playlist Search
 - Stackoverflow Search
+- Xda-developer Search
 - Website Screenshot
+- Special Pastebin
 - Telegraph Pasting
 - Telegraph File Uploader
 
