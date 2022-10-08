@@ -362,6 +362,19 @@ class SafoneAPI:
         """
         return await self._fetch("udemy/" + type, page=page, limit=limit)
 
+    async def ubuntu(self, query: str, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("ubuntu", query=query, limit=limit)
+
     async def google(self, query: str, limit: int = 10):
         """
         Returns An Object.
@@ -523,20 +536,21 @@ class SafoneAPI:
 
         return await self._post_json("carbon", json=kwargs)
 
-    async def rayso(self, code: str, title: str = "", theme: str = None, dark_mode: bool = False):
+    async def rayso(self, text: str, title: str = "", theme: str = None, dark_mode: bool = False):
         """
         Returns An Object.
+
                 Parameters:
-                    code (str): Rayso content [OPTIONAL]
-                    title (str): Rayso image title [OPTIONAL]
-                    theme (str): Rayso theme name [OPTIONAL]
-                    dark_mode (bool): Whether dark mode [OPTIONAL]
+                       text (str): Rayso content or text
+                       title (str): Rayso title [OPTIONAL]
+                       theme (str): Rayso theme name [OPTIONAL]
+                       dark_mode (bool): Whether dark mode [OPTIONAL]
                 Returns:
-                    Result object (str): Results which you can access with dot notation
+                        Result object (BytesIO): Results which you can access with filename
 
         """
         json = dict(
-                code=code,
+                text=text,
                 title=title,
                 theme=theme,
                 dark_mode=dark_mode,
