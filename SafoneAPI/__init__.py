@@ -77,6 +77,10 @@ class SafoneAPI:
             raise InvalidContent(
                 "Invalid Content Type, Please report this: https://api.safone.tech/report"
             )
+        except aiohttp.ClientConnectorError:
+            raise ConnectionError(
+                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
+            )
         return self._parse_result(response)
 
     async def _post_data(self, route, data, timeout=30):
@@ -100,6 +104,10 @@ class SafoneAPI:
             raise InvalidContent(
                 "Invalid Content Type, Please report this: https://api.safone.tech/report"
             )
+        except aiohttp.ClientConnectorError:
+            raise ConnectionError(
+                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
+            )
         return self._parse_result(response)
 
     async def _post_json(self, route, json, timeout=30):
@@ -122,6 +130,10 @@ class SafoneAPI:
         except aiohttp.ContentTypeError:
             raise InvalidContent(
                 "Invalid Content Type, Please report this: https://api.safone.tech/report"
+            )
+        except aiohttp.ClientConnectorError:
+            raise ConnectionError(
+                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
             )
         return self._parse_result(response)
 
@@ -1113,6 +1125,10 @@ class SafoneAPI:
 
 class InvalidRequest(Exception):
     """Incase request params is invalid"""
+    pass
+
+class ConnectionError(Exception):
+    """Incase unable to connect with site"""
     pass
 
 class InvalidContent(Exception):
