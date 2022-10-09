@@ -69,6 +69,8 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
+        except aiohttp.ClientConnectorError as conerr:
+            raise ConnectionError(f"Connection Error - {conerr}")
         except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
@@ -92,6 +94,8 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
+        except aiohttp.ClientConnectorError as conerr:
+            raise ConnectionError(f"Connection Error - {conerr}")
         except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
@@ -115,6 +119,8 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
+        except aiohttp.ClientConnectorError as conerr:
+            raise ConnectionError(f"Connection Error - {conerr}")
         except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
@@ -1113,6 +1119,10 @@ class SafoneAPI:
 
 class InvalidRequest(Exception):
     """Incase request params is invalid"""
+    pass
+
+class ConnectionError(Exception):
+    """Incase unable to connect with site."""
     pass
 
 class InvalidContent(Exception):
