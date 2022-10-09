@@ -69,8 +69,6 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
-        except aiohttp.ClientConnectorError as conerr:
-            raise ConnectionError(f"Connection Error - {conerr}")
         except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
@@ -78,6 +76,10 @@ class SafoneAPI:
         except aiohttp.ContentTypeError:
             raise InvalidContent(
                 "Invalid Content Type, Please report this: https://api.safone.tech/report"
+            )
+        except aiohttp.ClientConnectorError:
+            raise ConnectionError(
+                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
             )
         return self._parse_result(response)
 
@@ -94,8 +96,6 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
-        except aiohttp.ClientConnectorError as conerr:
-            raise ConnectionError(f"Connection Error - {conerr}")
         except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
@@ -103,6 +103,10 @@ class SafoneAPI:
         except aiohttp.ContentTypeError:
             raise InvalidContent(
                 "Invalid Content Type, Please report this: https://api.safone.tech/report"
+            )
+        except aiohttp.ClientConnectorError:
+            raise ConnectionError(
+                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
             )
         return self._parse_result(response)
 
@@ -119,8 +123,6 @@ class SafoneAPI:
                         "Api Call Failed, Please report this: https://api.safone.tech/report"
                     )
                 response = await resp.json()
-        except aiohttp.ClientConnectorError as conerr:
-            raise ConnectionError(f"Connection Error - {conerr}")
         except asyncio.TimeoutError:
             raise TimeoutError(
                 "Internal Server Timeout, Failed to communicate with api server"
@@ -128,6 +130,10 @@ class SafoneAPI:
         except aiohttp.ContentTypeError:
             raise InvalidContent(
                 "Invalid Content Type, Please report this: https://api.safone.tech/report"
+            )
+        except aiohttp.ClientConnectorError:
+            raise ConnectionError(
+                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
             )
         return self._parse_result(response)
 
@@ -1122,7 +1128,7 @@ class InvalidRequest(Exception):
     pass
 
 class ConnectionError(Exception):
-    """Incase unable to connect with site."""
+    """Incase unable to connect with site"""
     pass
 
 class InvalidContent(Exception):
