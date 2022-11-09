@@ -39,7 +39,7 @@ class SafoneAPI:
     """
 
     def __init__(self) -> None:
-        self.api = "https://api.safone.tech/"
+        self.api = "https://api.safone.me/"
         self.session = aiohttp.ClientSession
 
     def _get_fn(self, type: str) -> str:
