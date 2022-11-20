@@ -62,11 +62,11 @@ class SafoneAPI:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
                 if resp.status == 400:
                     raise InvalidRequest(
-                        "Invalid Request, Please read docs: https://api.safone.tech/redoc"
+                        "Invalid Request, Please read docs: https://api.safone.me/redoc"
                     )
                 if resp.status == 422:
                     raise GenericApiError(
-                        "Api Call Failed, Please report this: https://api.safone.tech/report"
+                        "Api Call Failed, Please report this: https://api.safone.me/report"
                     )
                 response = await resp.json()
         except asyncio.TimeoutError:
@@ -75,11 +75,11 @@ class SafoneAPI:
             )
         except aiohttp.ContentTypeError:
             raise InvalidContent(
-                "Invalid Content Type, Please report this: https://api.safone.tech/report"
+                "Invalid Content Type, Please report this: https://api.safone.me/report"
             )
         except aiohttp.ClientConnectorError:
             raise ConnectionError(
-                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
+                "Failed to communicate with api, Please report this: https://api.safone.me/report"
             )
         return self._parse_result(response)
 
@@ -89,11 +89,11 @@ class SafoneAPI:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
                 if resp.status == 400:
                     raise InvalidRequest(
-                        "Invalid Request, Please read docs: https://api.safone.tech/redoc"
+                        "Invalid Request, Please read docs: https://api.safone.me/redoc"
                     )
                 if resp.status == 422:
                     raise GenericApiError(
-                        "Api Call Failed, Please report this: https://api.safone.tech/report"
+                        "Api Call Failed, Please report this: https://api.safone.me/report"
                     )
                 response = await resp.json()
         except asyncio.TimeoutError:
@@ -102,11 +102,11 @@ class SafoneAPI:
             )
         except aiohttp.ContentTypeError:
             raise InvalidContent(
-                "Invalid Content Type, Please report this: https://api.safone.tech/report"
+                "Invalid Content Type, Please report this: https://api.safone.me/report"
             )
         except aiohttp.ClientConnectorError:
             raise ConnectionError(
-                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
+                "Failed to communicate with api, Please report this: https://api.safone.me/report"
             )
         return self._parse_result(response)
 
@@ -116,11 +116,11 @@ class SafoneAPI:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
                 if resp.status == 400:
                     raise InvalidRequest(
-                        "Invalid Request, Please read docs: https://api.safone.tech/redoc"
+                        "Invalid Request, Please read docs: https://api.safone.me/redoc"
                     )
                 if resp.status == 422:
                     raise GenericApiError(
-                        "Api Call Failed, Please report this: https://api.safone.tech/report"
+                        "Api Call Failed, Please report this: https://api.safone.me/report"
                     )
                 response = await resp.json()
         except asyncio.TimeoutError:
@@ -129,11 +129,11 @@ class SafoneAPI:
             )
         except aiohttp.ContentTypeError:
             raise InvalidContent(
-                "Invalid Content Type, Please report this: https://api.safone.tech/report"
+                "Invalid Content Type, Please report this: https://api.safone.me/report"
             )
         except aiohttp.ClientConnectorError:
             raise ConnectionError(
-                "Failed to communicate with api, Please report this: https://api.safone.tech/report"
+                "Failed to communicate with api, Please report this: https://api.safone.me/report"
             )
         return self._parse_result(response)
 
