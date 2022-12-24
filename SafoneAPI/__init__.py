@@ -857,7 +857,7 @@ class SafoneAPI:
         }
         return await self._post_json("quotly", json=json)
 
-    async def translate(self, text: str, origin: str = "", target: str = "en"):
+    async def translate(self, text: str, origin: str = "auto", target: str = "en"):
         """
         Returns An Object.
 
@@ -946,6 +946,19 @@ class SafoneAPI:
 
         """
         return await self._fetch("bypasslink", url=url, domain=domain)
+
+    async def ccgen(self, bin: str, limit: int = 10):
+        """
+        Returns An Object.
+
+                Parameters:
+                        bin (str): Bin to lookup
+                        limit (int): Limit the ccs [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("ccgen", bin=bin, limit=limit)
 
     async def skcheck(self, key: str):
         """
