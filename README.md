@@ -35,6 +35,7 @@ async def main():
 
 asyncio.run(main())
 ```
+For more checkout [API Playground](https://api.safone.me/docs) !
 
 ## List of APIs
 
@@ -46,6 +47,7 @@ asyncio.run(main())
 - Character Search
 - Anime Pics (SFW & NSFW)
 - Code Executor (Piston)
+- CC Generator
 - Spam Detector
 - NSFW Detector
 - Quotly Sticker
@@ -70,6 +72,7 @@ asyncio.run(main())
 - Urban Dictionary Search
 - Fake Info Generator
 - Ip Info Search
+- Bin Info Search
 - Covid Info Search
 - Country Info Search
 - Image Search
@@ -96,6 +99,7 @@ asyncio.run(main())
 - Unsplash Search
 - YouTube Search
 - Playlist Search
+- Stripe Key Checker
 - Stackoverflow Search
 - Xda-developer Search
 - Website Screenshot
