@@ -620,6 +620,18 @@ class SafoneAPI:
         """
         return await self._fetch("ipinfo", ip=ip)
 
+    async def bininfo(self, bin: int):
+        """
+        Returns An Object.
+
+                Parameters:
+                        bin (int): Bin to search
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("bininfo", bin=bin)
+
     async def covidinfo(self, country: str):
         """
         Returns An Object.
