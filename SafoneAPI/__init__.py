@@ -656,17 +656,17 @@ class SafoneAPI:
         """
         return await self._fetch("countryinfo", country=country)
 
-    async def fakeinfo(self, gender: str = ""):
+    async def fakeinfo(self, country: str = ""):
         """
         Returns An Object.
 
                 Parameters:
-                        gender (str): Gender of person [OPTIONAL]
+                        country (str): Country code or iso [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("fakeinfo", gender=gender)
+        return await self._fetch("fakeinfo", country=country)
 
     async def acronym(self, word: str):
         """
@@ -685,9 +685,9 @@ class SafoneAPI:
         Returns An Object.
 
                 Parameters:
-                        origin (str): origin of currency
-                        target (str): targeted currency to convert
-                        amount (int): amount of currency to convert
+                        origin (str): Origin of currency
+                        target (str): Targeted currency to convert
+                        amount (int): Amount of currency to convert
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
