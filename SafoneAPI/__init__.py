@@ -197,6 +197,18 @@ class SafoneAPI:
         """
         return await self._fetch("meme")
 
+    async def asq(self, query: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to ask
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("asq", query=query)
+
     async def quote(self, type: str = ""):
         """
         Returns An Object.
@@ -281,6 +293,18 @@ class SafoneAPI:
 
         """
         return await self._fetch("anime/character", query=query)
+
+    async def imagine(self, text: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Describe in text
+                Returns:
+                        Result object (BytesIO): Results which you can access with filename
+
+        """
+        return await self._fetch("imagine", text=text)
 
     async def anime_news(self, limit: int = 10):
         """
