@@ -26,9 +26,9 @@ import asyncio
 import aiohttp
 import aiofiles
 from io import BytesIO
-from typing import List
 from dotmap import DotMap
 from base64 import b64decode
+from typing import Union, List
 from pyrogram.types import Message, User
 
 
@@ -192,7 +192,7 @@ class SafoneAPI:
         Returns An Object.
 
                 Returns:
-                        Result object (str): Results which you can access with dot notation
+                        Result object (BytesIO): Results which you can access with filename
 
         """
         return await self._fetch("meme")
@@ -326,7 +326,7 @@ class SafoneAPI:
                         type (str): Anime content type
                         nsfw (bool): Whether include nonsafe content [OPTIONAL]
                 Returns:
-                        Result object (str): Results which you can access with filename
+                        Result object (BytesIO): Results which you can access with filename
 
         """
         if nsfw:
@@ -718,21 +718,22 @@ class SafoneAPI:
         """
         return await self._fetch("currency", origin=origin, target=target, amount=amount)
 
-    async def spam_scan(self, text: str = None, message: Message = None):
+    async def spam_scan(self, message: Union[Message, str]):
         """
         Returns An Object.
                 Parameters:
-                        text (str): Text to process
+                        message (Union[Message, str]): Message to process
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
         if isinstance(message, Message):
-            text = message.text or message.caption or ""
-        if not text:
+            message = message.text or message.caption or ""
+
+        if not message:
             raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
 
-        json = dict(text=text)
+        json = dict(message=message)
         return await self._post_json("spam", json=json)
 
     async def nsfw_scan(self, url: str = None, file: str = None):
@@ -803,6 +804,40 @@ class SafoneAPI:
             raise InvalidRequest("Please provide a query or TMDb ID")
 
         return await self._fetch("tmdb", query=query, limit=limit, tmdb_id=tmdb_id)
+
+    async def chatgpt(self, message: Union[Message, str], username: str = ""):
+        """
+        Returns An Object.
+
+                Parameters:
+                        message (Union[Message, str]): ~pyrogram.types.Message or text
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        if isinstance(message, Message):
+            m = message
+            message = ""
+            if m.from_user and m.from_user.username:
+                username = m.from_user.username.lower()
+            if m.reply_to_message:
+                message += m.reply_to_message.text + "\n"
+            if m.command:
+                message += " ".join(m.command[1:])
+            elif m.text:
+                message += m.text.strip()
+
+        if not message:
+            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
+
+        if len(message) > 1024:
+            json = dict(
+                    message=message,
+                    username=username,
+                )
+            return await self._post_json("chatgpt", json=json)
+
+        return await self._fetch("chatgpt", message=message, username=username)
 
     async def quotly(self, messages: List[Message]):
         """
@@ -983,18 +1018,21 @@ class SafoneAPI:
         """
         return await self._fetch("bypasslink", url=url, domain=domain)
 
-    async def ccgen(self, bin: str, limit: int = 10):
+    async def ccgen(self, bins: List[Union[str, int]], limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
-                        bin (str): Bin to lookup
-                        limit (int): Limit the ccs [OPTIONAL]
+                        bins (List[Union[str, int]]): List of bins
+                        limit (int): Limit the number of cards [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("ccgen", bin=bin, limit=limit)
+        if isinstance(bins, list):
+            bins = ",".join(map(str, bins))
+
+        return await self._fetch("ccgen", bins=bins, limit=limit)
 
     async def skcheck(self, key: str):
         """
@@ -1063,10 +1101,10 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    url (str): The website url with http
-                    width (int): Width of webshot [OPTIONAL]
-                    height (int): Height of webshot [OPTIONAL]
-                    full (bool): Whether capture full page [OPTIONAL]
+                        url (str): The website url with http
+                        width (int): Width of webshot [OPTIONAL]
+                        height (int): Height of webshot [OPTIONAL]
+                        full (bool): Whether capture full page [OPTIONAL]
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
@@ -1086,9 +1124,9 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    content (str): Content to paste
-                    title (str): Title of the page [OPTIONAL]
-                    format (bool): Whether paste in code format [OPTIONAL]
+                        content (str): Content to paste
+                        title (str): Title of the page [OPTIONAL]
+                        format (bool): Whether paste in code format [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
@@ -1105,9 +1143,9 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    user (str): New account username [OPTIONAL]
-                    email (str): New account email [OPTIONAL]
-                    pswd (str|int): New account password [OPTIONAL]
+                        user (str): New account username [OPTIONAL]
+                        email (str): New account email [OPTIONAL]
+                        pswd (str|int): New account password [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
@@ -1124,14 +1162,14 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    language (str): Programming language [OPTIONAL]
-                    code (str): Code to execute [OPTIONAL]
-                    stdin (str): STDIN for the code [OPTIONAL]
-                    args (list): arguments to pass in cli [OPTIONAL]
+                        language (str): Programming language [OPTIONAL]
+                        code (str): Code to execute [OPTIONAL]
+                        stdin (str): STDIN for the code [OPTIONAL]
+                        args (list): arguments to pass in cli [OPTIONAL]
                 Returns:
-                    Result object:
-                        result.output, result.output `if language is passed`,
-                        else a list of supported languages is returned
+                        Result object:
+                            result.output, result.output `if language is passed`,
+                            else a list of supported languages is returned
         """
         if not language:
             return await self._fetch("execute/languages")
@@ -1148,13 +1186,13 @@ class SafoneAPI:
         """
         Returns An Object.
                 Parameters:
-                    file (str): File path of a media [OPTIONAL]
-                    title (str): Page title [OPTIONAL]
-                    content (str): Page content [OPTIONAL]
-                    author_name (str): Page author name [OPTIONAL]
-                    author_url (str): Page author url [OPTIONAL]
+                        file (str): File path of a media [OPTIONAL]
+                        title (str): Page title [OPTIONAL]
+                        content (str): Page content [OPTIONAL]
+                        author_name (str): Page author name [OPTIONAL]
+                        author_url (str): Page author url [OPTIONAL]
                 Returns:
-                    Result object (str): Results which you can access with dot notation
+                        Result object (str): Results which you can access with dot notation
 
         """
         if not file and not title:
