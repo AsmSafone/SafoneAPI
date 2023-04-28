@@ -749,8 +749,10 @@ class SafoneAPI:
         """
         if not file and not url:
             raise InvalidRequest("Please provide a file path or URL")
+
         if not file:
             return await self._fetch("nsfw", image=url)
+
         async with aiofiles.open(file, mode="rb") as f:
             file = await f.read()
         return await self._post_data("nsfw", data={"image": file})
@@ -768,8 +770,10 @@ class SafoneAPI:
         """
         if not file and not url:
             raise InvalidRequest("Please provide a file path or URL")
+
         if not file:
             return await self._fetch("ocr", image=url)
+
         async with aiofiles.open(file, mode="rb") as f:
             file = await f.read()
         return await self._post_data("ocr", data={"image": file})
@@ -804,40 +808,6 @@ class SafoneAPI:
             raise InvalidRequest("Please provide a query or TMDb ID")
 
         return await self._fetch("tmdb", query=query, limit=limit, tmdb_id=tmdb_id)
-
-    async def chatgpt(self, message: Union[Message, str], username: str = ""):
-        """
-        Returns An Object.
-
-                Parameters:
-                        message (Union[Message, str]): ~pyrogram.types.Message or text
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-
-        """
-        if isinstance(message, Message):
-            m = message
-            message = ""
-            if m.from_user and m.from_user.username:
-                username = m.from_user.username.lower()
-            if m.reply_to_message:
-                message += m.reply_to_message.text + "\n"
-            if m.command:
-                message += " ".join(m.command[1:])
-            elif m.text:
-                message += m.text.strip()
-
-        if not message:
-            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
-
-        if len(message) > 1024:
-            json = dict(
-                    message=message,
-                    username=username,
-                )
-            return await self._post_json("chatgpt", json=json)
-
-        return await self._fetch("chatgpt", message=message, username=username)
 
     async def quotly(self, messages: List[Message]):
         """
@@ -1097,29 +1067,6 @@ class SafoneAPI:
         """
         return await self._fetch("stackoverflow", query=query, limit=limit)
 
-    async def webshot(self, url: str, width: int = 1920, height: int = 1080, full: bool = False):
-        """
-        Returns An Object.
-                Parameters:
-                        url (str): The website url with http
-                        width (int): Width of webshot [OPTIONAL]
-                        height (int): Height of webshot [OPTIONAL]
-                        full (bool): Whether capture full page [OPTIONAL]
-                Returns:
-                        Result object (BytesIO): Results which you can access with filename
-
-        """
-        if not url.startswith("http"):
-            url = "http://" + url
-
-        json = dict(
-                url=url,
-                width=width,
-                height=height,
-                full=full,
-            )
-        return await self._post_json("webshot", json=json)
-
     async def paste(self, content: str, title: str = None, format: bool = False):
         """
         Returns An Object.
@@ -1182,6 +1129,68 @@ class SafoneAPI:
             )
         return await self._post_json("execute", json=json)
 
+    async def chatgpt(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
+        """
+        Returns An Object.
+
+                Parameters:
+                        message (Union[Message, str]): ~pyrogram.types.Message or text
+                        chat_mode (str): Modes like 'assistant', 'code_assistant' etc [OPTIONAL]
+                        dialog_messages (list): List of chat messages as dict(user, bot) [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        formated_messages = []
+
+        if isinstance(message, Message):
+            if message.command:
+                message = " ".join(message.command[1:])
+            elif message.text:
+                message = message.text.strip()
+
+        for dialog_message in dialog_messages:
+            if isinstance(dialog_message, Message):
+                k = "bot" if dialog_message.from_user.is_bot else "user"
+                formated_messages.append({k: dialog_message.text.strip() or ""})
+            elif isinstance(dialog_message, dict):
+                formated_messages.append(dialog_message)
+
+        if not message:
+            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
+
+        json = dict(
+                message=message,
+                chat_mode=chat_mode,
+                dialog_messages=formated_messages,
+            )
+        return await self._post_json("chatgpt", json=json)
+
+    async def webshot(self, url: str, width: int = 1920, height: int = 1080, delay: float = 0.1, full: bool = False):
+        """
+        Returns An Object.
+                Parameters:
+                        url (str): The website url with http
+                        width (int): Width of webshot [OPTIONAL]
+                        height (int): Height of webshot [OPTIONAL]
+                        delay (float): Delay in seconds [OPTIONAL]
+                        full (bool): Whether capture full page [OPTIONAL]
+                Returns:
+                        Result object (BytesIO): Results which you can access with filename
+
+        """
+        if not url.startswith("http"):
+            url = "http://" + url
+
+        json = dict(
+                url=url,
+                width=width,
+                height=height,
+                delay=delay,
+                full=full,
+            )
+        return await self._post_json("webshot", json=json)
+
     async def telegraph(self, file: str = None, title: str = None, content: str = None, author_name: str = None, author_url: str = None):
         """
         Returns An Object.
@@ -1197,6 +1206,7 @@ class SafoneAPI:
         """
         if not file and not title:
             raise InvalidRequest("Please provide a file path or title")
+
         if not file:
             json = dict(
                 title=title,
@@ -1205,6 +1215,7 @@ class SafoneAPI:
                 author_url=author_url,
             )
             return await self._post_json("telegraph/text", json=json)
+
         async with aiofiles.open(file, mode="rb") as f:
             file = await f.read()
         return await self._post_data("telegraph/media", data={"media": file})
