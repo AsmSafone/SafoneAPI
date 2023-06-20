@@ -1067,25 +1067,6 @@ class SafoneAPI:
         """
         return await self._fetch("stackoverflow", query=query, limit=limit)
 
-    async def paste(self, content: str, title: str = None, format: bool = False):
-        """
-        Returns An Object.
-                Parameters:
-                        content (str): Content to paste
-                        title (str): Title of the page [OPTIONAL]
-                        format (bool): Whether paste in code format [OPTIONAL]
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-
-        """
-
-        json = dict(
-                content=content,
-                title=title,
-                code=format,
-            )
-        return await self._post_json("paste", json=json)
-
     async def spotify(self, user: str = None, email: str = None, pswd: str = None):
         """
         Returns An Object.
@@ -1104,6 +1085,27 @@ class SafoneAPI:
                 pswd=pswd,
             )
         return await self._post_json("spotify", json=json)
+
+    async def paste(self, content: str, title: str = None, language: str = None, ephemeral: bool = False):
+        """
+        Returns An Object.
+                Parameters:
+                        content (str): Text content to paste
+                        title (str): Title of the page [OPTIONAL]
+                        language (str): Language for highlight [OPTIONAL]
+                        ephemeral (bool): Whether one-time view [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+
+        json = dict(
+                content=content,
+                title=title,
+                language=language,
+                ephemeral=ephemeral,
+            )
+        return await self._post_json("paste", json=json)
 
     async def execute(self, language: str = None, code: str = None, stdin: str = "", args: list = []):
         """
