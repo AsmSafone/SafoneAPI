@@ -13,7 +13,7 @@ def read(fname, version=False):
 setuptools.setup(
     name="SafoneAPI",
     packages=setuptools.find_packages(),
-    version=read("SafoneAPI/version.py", version=True),
+    version=read("SafoneAPI/__init__.py", version=True),
     license="MIT",
     description="Asynchronous Python Wrapper For SafoneAPI",
     long_description=read("README.md"),

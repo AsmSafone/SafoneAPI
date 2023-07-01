@@ -20,7 +20,7 @@ $ pip install safoneapi
 
 ## Usage
 
-For Example, to search on google:
+For Example, to search on github:
 
 ```py
 import asyncio
@@ -29,16 +29,29 @@ from SafoneAPI import SafoneAPI
 
 async def main():
     api = SafoneAPI()
-    resp = await api.google("AsmSafone")
+    resp = await api.github("AsmSafone")
     print(resp.results)
 
 
 asyncio.run(main())
 ```
-For more checkout [API Playground](https://api.safone.me/docs) !
+
+## Documentation
+
+There is no documentation as of now!
+However, you can take help from the docstrings this way:
+
+```py
+from SafoneAPI import SafoneAPI
+
+print(help(SafoneAPI.carbon))
+```
+
+For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](https://api.safone.me/redoc).
 
 ## List of APIs
 
+- Advice
 - Astronomy
 - AI Chatbot
 - Apps Search
@@ -48,6 +61,8 @@ For more checkout [API Playground](https://api.safone.me/docs) !
 - Anime Pics (SFW & NSFW)
 - Code Executor (Piston)
 - CC Generator
+- ChatGPT Chatbot
+- DALL-E Imaginator
 - Spam Detector
 - NSFW Detector
 - Quotly Sticker
@@ -71,7 +86,7 @@ For more checkout [API Playground](https://api.safone.me/docs) !
 - Dictionary Search
 - Urban Dictionary Search
 - Fake Info Generator
-- Ip Info Search
+- Ip Fraud Checker
 - Bin Info Search
 - Covid Info Search
 - Country Info Search
@@ -85,13 +100,14 @@ For more checkout [API Playground](https://api.safone.me/docs) !
 - Npm Package Search
 - PyPi Package Search
 - QR Code Generator
+- Question-Answering ASQ
 - Spotify Account Creator
 - Telegram Sticker Search
 - Short Link Generator
 - Short Link Bypasser
 - Torrent Search
 - Truth or Dare
-- Udemy Discount Course
+- Udemy Course Finder
 - Wallpaper Search
 - Wikipedia Search
 - Weather Info
