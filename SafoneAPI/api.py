@@ -31,13 +31,16 @@ from base64 import b64decode
 from typing import Union, List
 from pyrogram.types import Message, User
 
-
 from .errors import (
     InvalidContent,
     InvalidRequest,
     GenericApiError,
     ConnectionError,
     TimeoutError,
+)
+from aiohttp.client_exceptions import (
+    ContentTypeError,
+    ClientConnectorError,
 )
 
 
@@ -87,15 +90,15 @@ class SafoneAPI:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
                 response = await resp.json()
         except asyncio.TimeoutError:
-            raise TimeoutError("Internal Server Timeout")
-        except aiohttp.ContentTypeError:
-            raise InvalidContent("Invalid Content Type")
-        except aiohttp.ClientConnectorError:
-            raise ConnectionError("Connection Error")
+            raise TimeoutError
+        except ContentTypeError:
+            raise InvalidContent
+        except ClientConnectorError:
+            raise ConnectionError
         if resp.status == 400:
-            raise InvalidRequest(response.get("error", "Invalid Request"))
+            raise InvalidRequest(response.get("error"))
         elif resp.status == 422:
-            raise GenericApiError(response.get("error", "Api Call Failed"))
+            raise GenericApiError(response.get("error"))
         return self._parse_result(response)
 
     async def _post_data(self, route, data, timeout=30):
@@ -104,15 +107,15 @@ class SafoneAPI:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
                 response = await resp.json()
         except asyncio.TimeoutError:
-            raise TimeoutError("Internal Server Timeout")
-        except aiohttp.ContentTypeError:
-            raise InvalidContent("Invalid Content Type")
-        except aiohttp.ClientConnectorError:
-            raise ConnectionError("Connection Error")
+            raise TimeoutError
+        except ContentTypeError:
+            raise InvalidContent
+        except ClientConnectorError:
+            raise ConnectionError
         if resp.status == 400:
-            raise InvalidRequest(response.get("error", "Invalid Request"))
+            raise InvalidRequest(response.get("error"))
         elif resp.status == 422:
-            raise GenericApiError(response.get("error", "Api Call Failed"))
+            raise GenericApiError(response.get("error"))
         return self._parse_result(response)
 
     async def _post_json(self, route, json, timeout=30):
@@ -121,15 +124,15 @@ class SafoneAPI:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
                 response = await resp.json()
         except asyncio.TimeoutError:
-            raise TimeoutError("Internal Server Timeout")
-        except aiohttp.ContentTypeError:
-            raise InvalidContent("Invalid Content Type")
-        except aiohttp.ClientConnectorError:
-            raise ConnectionError("Connection Error")
+            raise TimeoutError
+        except ContentTypeError:
+            raise InvalidContent
+        except ClientConnectorError:
+            raise ConnectionError
         if resp.status == 400:
-            raise InvalidRequest(response.get("error", "Invalid Request"))
+            raise InvalidRequest(response.get("error"))
         elif resp.status == 422:
-            raise GenericApiError(response.get("error", "Api Call Failed"))
+            raise GenericApiError(response.get("error"))
         return self._parse_result(response)
 
     async def advice(self):
@@ -1149,9 +1152,12 @@ class SafoneAPI:
                 message = message.text.strip()
 
         for dialog_message in dialog_messages:
-            if isinstance(dialog_message, Message):
+            if (
+                isinstance(dialog_message, Message)
+                and dialog_message.from_user and dialog_message.text
+            ):
                 k = "bot" if dialog_message.from_user.is_bot else "user"
-                formated_messages.append({k: dialog_message.text.strip() or ""})
+                formated_messages.append({k: dialog_message.text.strip()})
             elif isinstance(dialog_message, dict):
                 formated_messages.append(dialog_message)
 
@@ -1218,4 +1224,3 @@ class SafoneAPI:
         async with aiofiles.open(file, mode="rb") as f:
             file = await f.read()
         return await self._post_data("telegraph/media", data={"media": file})
-

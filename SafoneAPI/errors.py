@@ -21,57 +21,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-
-class TimeoutError(Exception):
-    """Incase request times out"""
-    def __init__(self, error):
+class BaseError(Exception):
+    message = "An error occurred"
+    
+    def __init__(self, error=None):
         self.error = error
         self.success = False
-        self.message = "Internal Server Timeout, Please try again later"
 
     def __str__(self):
-        return f"{self.message}"
+        return self.message
 
 
-class InvalidRequest(Exception):
-    """Incase request params is invalid"""
-    def __init__(self, error):
-        self.error = error
-        self.success = False
-        self.message = "Invalid Request, Please read docs: https://api.safone.me/redoc"
-
-    def __str__(self):
-        return f"{self.message}"
+class TimeoutError(BaseError):
+    message = "Internal Server Timeout, Please try again later"
 
 
-class InvalidContent(Exception):
-    """Incase returned content is invalid"""
-    def __init__(self, error):
-        self.error = error
-        self.success = False
-        self.message = "Invalid Content Received, Please report this: https://api.safone.me/report"
-
-    def __str__(self):
-        return f"{self.message}"
+class InvalidRequest(BaseError):
+    message = "Invalid Request, Please read docs: https://api.safone.me/redoc"
 
 
-class GenericApiError(Exception):
-    """Incase api returns validation error"""
-    def __init__(self, error):
-        self.error = error
-        self.success = False
-        self.message = "Generic Api Call Failed, Please report this: https://api.safone.me/report"
-
-    def __str__(self):
-        return f"{self.message}"
+class InvalidContent(BaseError):
+    message = "Invalid Content, Please report this: https://api.safone.me/report"
 
 
-class ConnectionError(Exception):
-    """Incase unable to connect with site"""
-    def __init__(self, error):
-        self.error = error
-        self.success = False
-        self.message = "Failed to communicate with api, Please report this: https://api.safone.me/report"
+class GenericApiError(BaseError):
+    message = "Api Call Failed, Please report this: https://api.safone.me/report"
 
-    def __str__(self):
-        return f"{self.message}"
+
+class ConnectionError(BaseError):
+    message = "Failed to communicate server, Please report this: https://api.safone.me/report"
