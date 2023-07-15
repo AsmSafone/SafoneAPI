@@ -89,12 +89,12 @@ class SafoneAPI:
             async with self.session() as client:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
                 response = await resp.json()
-        except asyncio.TimeoutError:
-            raise TimeoutError
+        except asyncio.exceptions.TimeoutError:
+            raise TimeoutError()
         except ContentTypeError:
-            raise InvalidContent
+            raise InvalidContent()
         except ClientConnectorError:
-            raise ConnectionError
+            raise ConnectionError()
         if resp.status == 400:
             raise InvalidRequest(response.get("error"))
         elif resp.status == 422:
@@ -106,12 +106,12 @@ class SafoneAPI:
             async with self.session() as client:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
                 response = await resp.json()
-        except asyncio.TimeoutError:
-            raise TimeoutError
+        except asyncio.exceptions.TimeoutError:
+            raise TimeoutError()
         except ContentTypeError:
-            raise InvalidContent
+            raise InvalidContent()
         except ClientConnectorError:
-            raise ConnectionError
+            raise ConnectionError()
         if resp.status == 400:
             raise InvalidRequest(response.get("error"))
         elif resp.status == 422:
@@ -123,12 +123,12 @@ class SafoneAPI:
             async with self.session() as client:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
                 response = await resp.json()
-        except asyncio.TimeoutError:
-            raise TimeoutError
+        except asyncio.exceptions.TimeoutError:
+            raise TimeoutError()
         except ContentTypeError:
-            raise InvalidContent
+            raise InvalidContent()
         except ClientConnectorError:
-            raise ConnectionError
+            raise ConnectionError()
         if resp.status == 400:
             raise InvalidRequest(response.get("error"))
         elif resp.status == 422:
@@ -345,19 +345,6 @@ class SafoneAPI:
         """
         return await self._fetch("npm", query=query, limit=limit)
 
-    async def logo(self, text: str, color: str = ""):
-        """
-        Returns An Object.
-
-                Parameters:
-                        text (str): Text to make logo
-                        color (str): Logo text color [OPTIONAL]
-                Returns:
-                        Result object (BytesIO): Results which you can access with filename
-
-        """
-        return await self._fetch("logo", text=text, color=color)
-
     async def write(self, text: str):
         """
         Returns An Object.
@@ -475,7 +462,7 @@ class SafoneAPI:
         """
         return await self._fetch("news", category=category, limit=limit)
 
-    async def imagine(self, text: str, limit: int = 2, version: int = 2):
+    async def imagine(self, text: str, limit: int = 1, version: int = 1):
         """
         Returns An Object.
 
@@ -1119,6 +1106,7 @@ class SafoneAPI:
                         Result object:
                             result.output, result.output `if language is passed`,
                             else a list of supported languages is returned
+
         """
         if not language:
             return await self._fetch("execute/languages")
@@ -1131,10 +1119,25 @@ class SafoneAPI:
             )
         return await self._post_json("execute", json=json)
 
-    async def chatgpt(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
+    async def logo(self, text: str, color: str = "", keyword: str = "", limit: int = 10, version: int = 1):
         """
         Returns An Object.
 
+                Parameters:
+                        text (str): Text to make logo
+                        color (str): Logo text color [OPTIONAL]
+                        keyword (str): Logo keywords [OPTIONAL]
+                        limit (int): Limit the results [OPTIONAL]
+                        version (int): Version of logo [OPTIONAL]
+                Returns:
+                        Result object (BytesIO): Results which you can access with filename
+
+        """
+        return await self._fetch("logo", text=text, color=color, keyword=keyword, limit=limit, version=version)
+
+    async def chatgpt(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
+        """
+        Returns An Object.
                 Parameters:
                         message (Union[Message, str]): ~pyrogram.types.Message or text
                         chat_mode (str): Modes like 'assistant', 'code_assistant' etc [OPTIONAL]
@@ -1150,6 +1153,8 @@ class SafoneAPI:
                 message = " ".join(message.command[1:])
             elif message.text:
                 message = message.text.strip()
+            elif message.caption:
+                message = message.caption.strip()
 
         for dialog_message in dialog_messages:
             if (
@@ -1195,6 +1200,37 @@ class SafoneAPI:
                 full=full,
             )
         return await self._post_json("webshot", json=json)
+
+    async def bard(self, message: Union[Message, str], conversation_id: str = None, response_id: str = None, choice_id: str = None):
+        """
+        Returns An Object.
+                    Parameters:
+                            message (Union[Message, str]): ~pyrogram.types.Message or text
+                            conversation_id (str): Conversation ID for history [OPTIONAL]
+                            response_id (str): Response ID from last response for history [OPTIONAL]
+                            choice_id (str): Content choice ID from last response for history [OPTIONAL]
+                    Returns:
+                            Result object (str): Results which you can access with dot notation
+    
+            """
+        if isinstance(message, Message):
+            if message.command:
+                message = " ".join(message.command[1:])
+            elif message.text:
+                message = message.text.strip()
+            elif message.caption:
+                message = message.caption.strip()
+
+        if not message:
+            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
+
+        json = dict(
+                message=message,
+                conversation_id=conversation_id,
+                response_id=response_id,
+                choice_id=choice_id,
+            )
+        return await self._post_json("bard", json=json)
 
     async def telegraph(self, file: str = None, title: str = None, content: str = None, author_name: str = None, author_url: str = None):
         """
