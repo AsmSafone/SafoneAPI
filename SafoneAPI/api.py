@@ -89,16 +89,16 @@ class SafoneAPI:
             async with self.session() as client:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
                 response = await resp.json()
-        except asyncio.exceptions.TimeoutError:
-            raise TimeoutError()
+        except asyncio.TimeoutError:
+            raise TimeoutError
         except ContentTypeError:
-            raise InvalidContent()
+            raise InvalidContent
         except ClientConnectorError:
-            raise ConnectionError()
+            raise ConnectionError
         if resp.status == 400:
-            raise InvalidRequest(response.get("error"))
+            raise InvalidRequest(response["docs"])
         elif resp.status == 422:
-            raise GenericApiError(response.get("error"))
+            raise GenericApiError(response["error"])
         return self._parse_result(response)
 
     async def _post_data(self, route, data, timeout=30):
@@ -106,16 +106,16 @@ class SafoneAPI:
             async with self.session() as client:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
                 response = await resp.json()
-        except asyncio.exceptions.TimeoutError:
-            raise TimeoutError()
+        except asyncio.TimeoutError:
+            raise TimeoutError
         except ContentTypeError:
-            raise InvalidContent()
+            raise InvalidContent
         except ClientConnectorError:
-            raise ConnectionError()
+            raise ConnectionError
         if resp.status == 400:
-            raise InvalidRequest(response.get("error"))
+            raise InvalidRequest(response["docs"])
         elif resp.status == 422:
-            raise GenericApiError(response.get("error"))
+            raise GenericApiError(response["error"])
         return self._parse_result(response)
 
     async def _post_json(self, route, json, timeout=30):
@@ -123,16 +123,16 @@ class SafoneAPI:
             async with self.session() as client:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
                 response = await resp.json()
-        except asyncio.exceptions.TimeoutError:
-            raise TimeoutError()
+        except asyncio.TimeoutError:
+            raise TimeoutError
         except ContentTypeError:
-            raise InvalidContent()
+            raise InvalidContent
         except ClientConnectorError:
-            raise ConnectionError()
+            raise ConnectionError
         if resp.status == 400:
-            raise InvalidRequest(response.get("error"))
+            raise InvalidRequest(response["docs"])
         elif resp.status == 422:
-            raise GenericApiError(response.get("error"))
+            raise GenericApiError(response["error"])
         return self._parse_result(response)
 
     async def advice(self):
@@ -765,7 +765,7 @@ class SafoneAPI:
             file = await f.read()
         return await self._post_data("ocr", data={"image": file})
 
-    async def proxy(self, type: str, country: str = "", limit: int = 10):
+    async def proxy(self, type: str, country: str = "all", limit: int = 10):
         """
         Returns An Object.
 
@@ -1135,13 +1135,39 @@ class SafoneAPI:
         """
         return await self._fetch("logo", text=text, color=color, keyword=keyword, limit=limit, version=version)
 
-    async def chatgpt(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
+    async def webshot(self, url: str, width: int = 1920, height: int = 1080, delay: float = 0.1, full: bool = False):
+        """
+        Returns An Object.
+                Parameters:
+                        url (str): The website url with http
+                        width (int): Width of webshot [OPTIONAL]
+                        height (int): Height of webshot [OPTIONAL]
+                        delay (float): Delay in seconds [OPTIONAL]
+                        full (bool): Whether capture full page [OPTIONAL]
+                Returns:
+                        Result object (BytesIO): Results which you can access with filename
+
+        """
+        if not url.startswith("http"):
+            url = "http://" + url
+
+        json = dict(
+                url=url,
+                width=width,
+                height=height,
+                delay=delay,
+                full=full,
+            )
+        return await self._post_json("webshot", json=json)
+
+    async def chatgpt(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = [], version: int = 3):
         """
         Returns An Object.
                 Parameters:
                         message (Union[Message, str]): ~pyrogram.types.Message or text
                         chat_mode (str): Modes like 'assistant', 'code_assistant' etc [OPTIONAL]
                         dialog_messages (list): List of chat messages as dict(user, bot) [OPTIONAL]
+                        version (int): The GPT model version (3 = gpt-3.5 and 4 = gpt-4) [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
@@ -1171,35 +1197,11 @@ class SafoneAPI:
 
         json = dict(
                 message=message,
+                version=version,
                 chat_mode=chat_mode,
                 dialog_messages=formated_messages,
             )
         return await self._post_json("chatgpt", json=json)
-
-    async def webshot(self, url: str, width: int = 1920, height: int = 1080, delay: float = 0.1, full: bool = False):
-        """
-        Returns An Object.
-                Parameters:
-                        url (str): The website url with http
-                        width (int): Width of webshot [OPTIONAL]
-                        height (int): Height of webshot [OPTIONAL]
-                        delay (float): Delay in seconds [OPTIONAL]
-                        full (bool): Whether capture full page [OPTIONAL]
-                Returns:
-                        Result object (BytesIO): Results which you can access with filename
-
-        """
-        if not url.startswith("http"):
-            url = "http://" + url
-
-        json = dict(
-                url=url,
-                width=width,
-                height=height,
-                delay=delay,
-                full=full,
-            )
-        return await self._post_json("webshot", json=json)
 
     async def bard(self, message: Union[Message, str], conversation_id: str = None, response_id: str = None, choice_id: str = None):
         """
