@@ -357,6 +357,20 @@ class SafoneAPI:
         """
         return await self._fetch("write", text=text)
 
+    async def shazam(self, file: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        file (str): File path of a media
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        async with aiofiles.open(file, mode="rb") as f:
+            file = await f.read()
+        return await self._post_data("shazam", data={"media": file})
+
     async def udemy(self, type: str, page: int = 1, limit: int = 10):
         """
         Returns An Object.
@@ -708,6 +722,7 @@ class SafoneAPI:
     async def spam_scan(self, message: Union[Message, str]):
         """
         Returns An Object.
+
                 Parameters:
                         message (Union[Message, str]): Message to process
                 Returns:
@@ -885,20 +900,6 @@ class SafoneAPI:
         }
         return await self._post_json("quotly", json=json)
 
-    async def translate(self, text: str, origin: str = "auto", target: str = "en"):
-        """
-        Returns An Object.
-
-                Parameters:
-                        text (str): Text to translate
-                        origin (str): Language code of origin language [OPTIONAL]
-                        target (str): Language code of target language [OPTIONAL]
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-
-        """
-        return await self._fetch("translate", text=text, origin=origin, target=target)
-
     async def figlet(self, text: str, font: str = ""):
         """
         Returns An Object.
@@ -1057,6 +1058,7 @@ class SafoneAPI:
     async def spotify(self, user: str = None, email: str = None, pswd: str = None):
         """
         Returns An Object.
+
                 Parameters:
                         user (str): New account username [OPTIONAL]
                         email (str): New account email [OPTIONAL]
@@ -1073,9 +1075,29 @@ class SafoneAPI:
             )
         return await self._post_json("spotify", json=json)
 
+    async def translate(self, text: str, source: str = "auto", target: str = "en"):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Text to translate
+                        source (str): Language code of source language [OPTIONAL]
+                        target (str): Language code of target language [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        json = dict(
+                text=text,
+                source=source,
+                target=target,
+            )
+        return await self._post_json("translate", json=json)
+
     async def paste(self, content: str, title: str = None, language: str = None, ephemeral: bool = False):
         """
         Returns An Object.
+
                 Parameters:
                         content (str): Text content to paste
                         title (str): Title of the page [OPTIONAL]
@@ -1097,6 +1119,7 @@ class SafoneAPI:
     async def execute(self, language: str = None, code: str = None, stdin: str = "", args: list = []):
         """
         Returns An Object.
+
                 Parameters:
                         language (str): Programming language [OPTIONAL]
                         code (str): Code to execute [OPTIONAL]
@@ -1138,6 +1161,7 @@ class SafoneAPI:
     async def webshot(self, url: str, width: int = 1920, height: int = 1080, delay: float = 0.1, full: bool = False):
         """
         Returns An Object.
+
                 Parameters:
                         url (str): The website url with http
                         width (int): Width of webshot [OPTIONAL]
@@ -1163,6 +1187,7 @@ class SafoneAPI:
     async def chatgpt(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = [], version: int = 3):
         """
         Returns An Object.
+
                 Parameters:
                         message (Union[Message, str]): ~pyrogram.types.Message or text
                         chat_mode (str): Modes like 'assistant', 'code_assistant' etc [OPTIONAL]
@@ -1206,13 +1231,14 @@ class SafoneAPI:
     async def bard(self, message: Union[Message, str], conversation_id: str = None, response_id: str = None, choice_id: str = None):
         """
         Returns An Object.
-                    Parameters:
-                            message (Union[Message, str]): ~pyrogram.types.Message or text
-                            conversation_id (str): Conversation ID for history [OPTIONAL]
-                            response_id (str): Response ID from last response for history [OPTIONAL]
-                            choice_id (str): Content choice ID from last response for history [OPTIONAL]
-                    Returns:
-                            Result object (str): Results which you can access with dot notation
+
+                Parameters:
+                        message (Union[Message, str]): ~pyrogram.types.Message or text
+                        conversation_id (str): Conversation ID for history [OPTIONAL]
+                        response_id (str): Response ID from last response for history [OPTIONAL]
+                        choice_id (str): Content choice ID from last response for history [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
     
             """
         if isinstance(message, Message):
@@ -1237,6 +1263,7 @@ class SafoneAPI:
     async def telegraph(self, file: str = None, title: str = None, content: str = None, author_name: str = None, author_url: str = None):
         """
         Returns An Object.
+
                 Parameters:
                         file (str): File path of a media [OPTIONAL]
                         title (str): Page title [OPTIONAL]
