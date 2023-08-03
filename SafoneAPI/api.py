@@ -207,6 +207,20 @@ class SafoneAPI:
         """
         return await self._fetch("asq", query=query)
 
+    async def shazam(self, file: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        file (str): File path of song
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        async with aiofiles.open(file, mode="rb") as f:
+            file = await f.read()
+        return await self._post_data("shazam", data={"media": file})
+
     async def quote(self, type: str = ""):
         """
         Returns An Object.
@@ -345,31 +359,18 @@ class SafoneAPI:
         """
         return await self._fetch("npm", query=query, limit=limit)
 
-    async def write(self, text: str):
+    async def morse(self, text: str, type: str):
         """
         Returns An Object.
 
                 Parameters:
-                        text (str): Text to make logo
-                Returns:
-                        Result object (BytesIO): Results which you can access with filename
-
-        """
-        return await self._fetch("write", text=text)
-
-    async def shazam(self, file: str):
-        """
-        Returns An Object.
-
-                Parameters:
-                        file (str): File path of a media
+                        text (str): Text to convert
+                        type (str): Type of conversion (encode/decode)
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        async with aiofiles.open(file, mode="rb") as f:
-            file = await f.read()
-        return await self._post_data("shazam", data={"media": file})
+        return await self._fetch("morse/" + type, text=text)
 
     async def udemy(self, type: str, page: int = 1, limit: int = 10):
         """
@@ -1055,25 +1056,18 @@ class SafoneAPI:
         """
         return await self._fetch("stackoverflow", query=query, limit=limit)
 
-    async def spotify(self, user: str = None, email: str = None, pswd: str = None):
+    async def spotify(self, query: str, limit: int = 10):
         """
         Returns An Object.
 
                 Parameters:
-                        user (str): New account username [OPTIONAL]
-                        email (str): New account email [OPTIONAL]
-                        pswd (str|int): New account password [OPTIONAL]
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-
-        json = dict(
-                user=user,
-                email=email,
-                pswd=pswd,
-            )
-        return await self._post_json("spotify", json=json)
+        return await self._fetch("spotify", query=query, limit=limit)
 
     async def translate(self, text: str, source: str = "auto", target: str = "en"):
         """
@@ -1107,7 +1101,6 @@ class SafoneAPI:
                         Result object (str): Results which you can access with dot notation
 
         """
-
         json = dict(
                 content=content,
                 title=title,
@@ -1115,6 +1108,27 @@ class SafoneAPI:
                 ephemeral=ephemeral,
             )
         return await self._post_json("paste", json=json)
+
+    async def write(self, text: str, page: str = None, font: str = None, color: str = "black"):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Text to write
+                        page (str): Page name [OPTIONAL]
+                        font (str): Font name [OPTIONAL]
+                        color (str): Color of text [OPTIONAL]
+                Returns:
+                        Result object (List[BytesIO]): Results which you can access with filename
+
+        """
+        json = dict(
+                text=text,
+                page=page,
+                font=font,
+                color=color,
+            )
+        return await self._post_json("write", json=json)
 
     async def execute(self, language: str = None, code: str = None, stdin: str = "", args: list = []):
         """

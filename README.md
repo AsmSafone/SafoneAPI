@@ -85,6 +85,8 @@ For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](ht
 - Logo Maker
 - Lyrics Search
 - Manga Search
+- Morse Code Encoder
+- Morse Code Decoder
 - Note Writer
 - NSFW Detector
 - Npm Package Search
@@ -108,7 +110,7 @@ For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](ht
 - Short Link Bypasser
 - Short Link Generator
 - Stackoverflow Search
-- Spotify Account Creator
+- Spotify Song Search
 - TMDb Search
 - Torrent Search
 - Truth or Dare Game
