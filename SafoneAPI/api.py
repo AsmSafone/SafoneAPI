@@ -781,6 +781,27 @@ class SafoneAPI:
             file = await f.read()
         return await self._post_data("ocr", data={"image": file})
 
+    async def removebg(self, url: str = None, file: str = None):
+        """
+        Returns An Object.
+
+                Parameters:
+                        url (str): URL to scan [OPTIONAL]
+                        file (str): File path of an image to scan [OPTIONAL]
+                Returns:
+                        Result object (BytesIO): Results which you can access with filename
+
+        """
+        if not file and not url:
+            raise InvalidRequest("Please provide a file path or URL")
+
+        if not file:
+            return await self._fetch("removebg", image=url)
+
+        async with aiofiles.open(file, mode="rb") as f:
+            file = await f.read()
+        return await self._post_data("removebg", data={"image": file})
+
     async def proxy(self, type: str, country: str = "all", limit: int = 10):
         """
         Returns An Object.
