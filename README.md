@@ -71,7 +71,6 @@ For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](ht
 - Currency Converter
 - Country Info Search
 - Code Executor (Piston)
-- Dictionary Search
 - DALL-E Image Creator
 - Figlet Generator
 - Fake Info Generator
@@ -82,6 +81,7 @@ For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](ht
 - Google Image Search
 - Ip Fraud Checker
 - Internet Acronyms
+- Image Background Remover
 - Logo Maker
 - Lyrics Search
 - Manga Search
@@ -121,12 +121,13 @@ For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](ht
 - Unsplash Search
 - Udemy Course Finder
 - Urban Dictionary Search
+- Word Dictionary Search
 - Wallpaper Search
 - Wikipedia Search
 - Website Screenshot
 - Weather Informatiom
 - Xda-developer Search
-- YouTube Search
+- YouTube Video Search
 - YouTube Playlist Search
 
 ## Note
