@@ -37,16 +37,16 @@ class TimeoutError(BaseError):
 
 
 class InvalidRequest(BaseError):
-    message = "Invalid Request, Please read docs: https://api.safone.me/redoc"
+    message = "Invalid Request, Please read docs: https://api.safone.dev/redoc"
 
 
 class InvalidContent(BaseError):
-    message = "Invalid Content, Please report this: https://api.safone.me/report"
+    message = "Invalid Content, Please report this: https://api.safone.dev/report"
 
 
 class GenericApiError(BaseError):
-    message = "Api Call Failed, Please report this: https://api.safone.me/report"
+    message = "Api Call Failed, Please report this: https://api.safone.dev/report"
 
 
 class ConnectionError(BaseError):
-    message = "Failed to communicate server, Please report this: https://api.safone.me/report"
+    message = "Failed to communicate server, Please report this: https://api.safone.dev/report"
