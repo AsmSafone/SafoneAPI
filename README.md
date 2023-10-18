@@ -44,10 +44,10 @@ However, you can take help from the docstrings this way:
 ```py
 from SafoneAPI import SafoneAPI
 
-print(help(SafoneAPI.carbon))
+print(help(SafoneAPI.logo))
 ```
 
-For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](https://api.safone.me/redoc).
+For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](https://api.safone.dev/redoc).
 
 ## List of APIs
 
@@ -79,9 +79,11 @@ For more checkout [API Playground](https://api.safone.me/docs) or [Read Docs](ht
 - Global News (BBC)
 - Google Translator
 - Google Image Search
+- IMDb Search
 - Ip Fraud Checker
 - Internet Acronyms
 - Image Background Remover
+- LLama 2
 - Logo Maker
 - Lyrics Search
 - Manga Search

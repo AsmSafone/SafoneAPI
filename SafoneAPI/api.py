@@ -88,51 +88,57 @@ class SafoneAPI:
         try:
             async with self.session() as client:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
+                if resp.status == 502:
+                    raise ConnectionError()
                 response = await resp.json()
+                if resp.status == 400:
+                    raise InvalidRequest(response.get("docs"))
+                if resp.status == 422:
+                    raise GenericApiError(response.get("error"))
         except asyncio.TimeoutError:
             raise TimeoutError
         except ContentTypeError:
             raise InvalidContent
         except ClientConnectorError:
             raise ConnectionError
-        if resp.status == 400:
-            raise InvalidRequest(response["docs"])
-        elif resp.status == 422:
-            raise GenericApiError(response["error"])
         return self._parse_result(response)
 
     async def _post_data(self, route, data, timeout=30):
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
+                if resp.status == 502:
+                    raise ConnectionError()
                 response = await resp.json()
+                if resp.status == 400:
+                    raise InvalidRequest(response.get("docs"))
+                if resp.status == 422:
+                    raise GenericApiError(response.get("error"))
         except asyncio.TimeoutError:
             raise TimeoutError
         except ContentTypeError:
             raise InvalidContent
         except ClientConnectorError:
             raise ConnectionError
-        if resp.status == 400:
-            raise InvalidRequest(response["docs"])
-        elif resp.status == 422:
-            raise GenericApiError(response["error"])
         return self._parse_result(response)
 
     async def _post_json(self, route, json, timeout=30):
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
+                if resp.status == 502:
+                    raise ConnectionError()
                 response = await resp.json()
+                if resp.status == 400:
+                    raise InvalidRequest(response.get("docs"))
+                if resp.status == 422:
+                    raise GenericApiError(response.get("error"))
         except asyncio.TimeoutError:
             raise TimeoutError
         except ContentTypeError:
             raise InvalidContent
         except ClientConnectorError:
             raise ConnectionError
-        if resp.status == 400:
-            raise InvalidRequest(response["docs"])
-        elif resp.status == 422:
-            raise GenericApiError(response["error"])
         return self._parse_result(response)
 
     async def advice(self):
@@ -206,6 +212,18 @@ class SafoneAPI:
 
         """
         return await self._fetch("asq", query=query)
+
+    async def llama(self, query: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to ask to llama
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("llama", query=query)
 
     async def shazam(self, file: str):
         """
@@ -816,6 +834,23 @@ class SafoneAPI:
         """
         return await self._fetch("proxy/" + type, country=country, limit=limit)
 
+    async def imdb(self, query: str = "", limit: int = 10, imdb_id: str = None):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                        imdb_id (str): Specific IMDb ID [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        if not query and not imdb_id:
+            raise InvalidRequest("Please provide a query or IMDb ID")
+
+        return await self._fetch("imdb", query=query, limit=limit, imdb_id=imdb_id)
+
     async def tmdb(self, query: str = "", limit: int = 10, tmdb_id: int = 0):
         """
         Returns An Object.
@@ -823,7 +858,7 @@ class SafoneAPI:
                 Parameters:
                         query (str): Query to search
                         limit (int): Limit the results [OPTIONAL]
-                        tmdb_id (str): Specific TMDb ID [OPTIONAL]
+                        tmdb_id (int): Specific TMDb ID [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
