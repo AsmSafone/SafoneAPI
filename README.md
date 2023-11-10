@@ -77,13 +77,14 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - Google Search
 - Github Search
 - Global News (BBC)
+- Grammarly Checker
 - Google Translator
 - Google Image Search
 - IMDb Search
 - Ip Fraud Checker
 - Internet Acronyms
 - Image Background Remover
-- LLama 2
+- LLama-2 AI
 - Logo Maker
 - Lyrics Search
 - Manga Search
@@ -93,6 +94,7 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - NSFW Detector
 - Npm Package Search
 - OCR/ Text Reader
+- Paraphraser Tool
 - Proxy Finder (HTTP)
 - PyPi Package Search
 - Quotly Sticker

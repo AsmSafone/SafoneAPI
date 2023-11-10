@@ -84,7 +84,7 @@ class SafoneAPI:
                 response = self._decode_image(response.image, type, 0)
         return response
 
-    async def _fetch(self, route, timeout=30, **params):
+    async def _fetch(self, route, timeout=60, **params):
         try:
             async with self.session() as client:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
@@ -103,7 +103,7 @@ class SafoneAPI:
             raise ConnectionError
         return self._parse_result(response)
 
-    async def _post_data(self, route, data, timeout=30):
+    async def _post_data(self, route, data, timeout=60):
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
@@ -122,7 +122,7 @@ class SafoneAPI:
             raise ConnectionError
         return self._parse_result(response)
 
-    async def _post_json(self, route, json, timeout=30):
+    async def _post_json(self, route, json, timeout=60):
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
@@ -1072,6 +1072,32 @@ class SafoneAPI:
 
         """
         return await self._fetch("spellcheck", text=text)
+
+    async def paraphrase(self, text: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Some text
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        json = dict(text=text)
+        return await self._post_json("paraphrase", json=json)
+
+    async def grammarly(self, text: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Some text
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        json = dict(text=text)
+        return await self._post_json("grammarly", json=json)
 
     async def tgsticker(self, query: str, limit: int = 10):
         """
