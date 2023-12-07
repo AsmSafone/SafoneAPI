@@ -33,7 +33,11 @@ class BaseError(Exception):
 
 
 class TimeoutError(BaseError):
-    message = "Internal Server Timeout, Please try again later"
+    message = "Request Timeout, Please try again later"
+
+
+class RateLimitExceeded(BaseError):
+    message = "Rate Limit Exceeded, Please try again later"
 
 
 class InvalidRequest(BaseError):

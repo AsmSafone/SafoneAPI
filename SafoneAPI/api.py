@@ -32,11 +32,12 @@ from typing import Union, List
 from pyrogram.types import Message, User
 
 from .errors import (
+    TimeoutError,
     InvalidContent,
     InvalidRequest,
     GenericApiError,
     ConnectionError,
-    TimeoutError,
+    RateLimitExceeded,
 )
 from aiohttp.client_exceptions import (
     ContentTypeError,
@@ -88,12 +89,14 @@ class SafoneAPI:
         try:
             async with self.session() as client:
                 resp = await client.get(self.api + route, params=params, timeout=timeout)
-                if resp.status == 502:
-                    raise ConnectionError()
+                if resp.status == 429:
+                    raise RateLimitExceeded
+                elif resp.status in (502, 503):
+                    raise ConnectionError
                 response = await resp.json()
                 if resp.status == 400:
                     raise InvalidRequest(response.get("docs"))
-                if resp.status == 422:
+                elif resp.status == 422:
                     raise GenericApiError(response.get("error"))
         except asyncio.TimeoutError:
             raise TimeoutError
@@ -107,12 +110,14 @@ class SafoneAPI:
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, data=data, timeout=timeout)
-                if resp.status == 502:
-                    raise ConnectionError()
+                if resp.status == 429:
+                    raise RateLimitExceeded
+                elif resp.status in (502, 503):
+                    raise ConnectionError
                 response = await resp.json()
                 if resp.status == 400:
                     raise InvalidRequest(response.get("docs"))
-                if resp.status == 422:
+                elif resp.status == 422:
                     raise GenericApiError(response.get("error"))
         except asyncio.TimeoutError:
             raise TimeoutError
@@ -126,12 +131,14 @@ class SafoneAPI:
         try:
             async with self.session() as client:
                 resp = await client.post(self.api + route, json=json, timeout=timeout)
-                if resp.status == 502:
-                    raise ConnectionError()
+                if resp.status == 429:
+                    raise RateLimitExceeded
+                elif resp.status in (502, 503):
+                    raise ConnectionError
                 response = await resp.json()
                 if resp.status == 400:
                     raise InvalidRequest(response.get("docs"))
-                if resp.status == 422:
+                elif resp.status == 422:
                     raise GenericApiError(response.get("error"))
         except asyncio.TimeoutError:
             raise TimeoutError
