@@ -1177,6 +1177,46 @@ class SafoneAPI:
             )
         return await self._post_json("translate", json=json)
 
+    async def bard(self, message: Union[Message, str], dialog_messages: list = []):
+        """
+        Returns An Object.
+
+                Parameters:
+                        message (Union[Message, str]): ~pyrogram.types.Message or text
+                        dialog_messages (list): List of chat messages as dict(user, bot) [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+    
+            """
+        formated_messages = []
+
+        if isinstance(message, Message):
+            if message.command:
+                message = " ".join(message.command[1:])
+            elif message.text:
+                message = message.text.strip()
+            elif message.caption:
+                message = message.caption.strip()
+
+        for dialog_message in dialog_messages:
+            if (
+                isinstance(dialog_message, Message)
+                and dialog_message.from_user and dialog_message.text
+            ):
+                k = "bot" if dialog_message.from_user.is_bot else "user"
+                formated_messages.append({k: dialog_message.text.strip()})
+            elif isinstance(dialog_message, dict):
+                formated_messages.append(dialog_message)
+
+        if not message:
+            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
+
+        json = dict(
+                message=message,
+                dialog_messages=formated_messages,
+            )
+        return await self._post_json("bard", json=json)
+
     async def paste(self, content: str, title: str = None, language: str = None, ephemeral: bool = False):
         """
         Returns An Object.
@@ -1330,38 +1370,6 @@ class SafoneAPI:
                 dialog_messages=formated_messages,
             )
         return await self._post_json("chatgpt", json=json)
-
-    async def bard(self, message: Union[Message, str], conversation_id: str = None, response_id: str = None, choice_id: str = None):
-        """
-        Returns An Object.
-
-                Parameters:
-                        message (Union[Message, str]): ~pyrogram.types.Message or text
-                        conversation_id (str): Conversation ID for history [OPTIONAL]
-                        response_id (str): Response ID from last response for history [OPTIONAL]
-                        choice_id (str): Content choice ID from last response for history [OPTIONAL]
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-    
-            """
-        if isinstance(message, Message):
-            if message.command:
-                message = " ".join(message.command[1:])
-            elif message.text:
-                message = message.text.strip()
-            elif message.caption:
-                message = message.caption.strip()
-
-        if not message:
-            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
-
-        json = dict(
-                message=message,
-                conversation_id=conversation_id,
-                response_id=response_id,
-                choice_id=choice_id,
-            )
-        return await self._post_json("bard", json=json)
 
     async def telegraph(self, file: str = None, title: str = None, content: str = None, author_name: str = None, author_url: str = None):
         """
