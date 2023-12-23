@@ -23,4 +23,4 @@ SOFTWARE.
 
 from .api import *
 
-__version__ = "1.0.51"
+__version__ = "1.0.55"

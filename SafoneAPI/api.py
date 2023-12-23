@@ -349,7 +349,7 @@ class SafoneAPI:
 
                 Parameters:
                         type (str): Anime content type
-                        nsfw (bool): Whether include nonsafe content [OPTIONAL]
+                        nsfw (bool): Whether include adult content [OPTIONAL]
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
@@ -502,35 +502,6 @@ class SafoneAPI:
         """
         return await self._fetch("news", category=category, limit=limit)
 
-    async def imagine(self, text: str, limit: int = 1, version: int = 1):
-        """
-        Returns An Object.
-
-                Parameters:
-                        text (str): Describe in text
-                        limit (int): Limit the results [OPTIONAL]
-                        version (int): Version of imagine [OPTIONAL]
-                Returns:
-                        Result object (List[BytesIO]): Results which you can access with filename
-
-        """
-        return await self._fetch("imagine", text=text, limit=limit, version=version)
-
-    async def reddit(self, query: str, limit: int = 10, subreddit: list = [], nsfw: bool = False):
-        """
-        Returns An Object.
-
-                Parameters:
-                        query (str): Query to search
-                        limit (int): Limit the results [OPTIONAL]
-                        subreddit (list): Subreddits to include [OPTIONAL]
-                        nsfw (bool): Whether include nonsafe content [OPTIONAL]
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-
-        """
-        return await self._fetch("reddit", query=query, limit=limit, subreddit=subreddit, nsfw=nsfw)
-
     async def urban(self, query: str, limit: int = 10):
         """
         Returns An Object.
@@ -619,6 +590,42 @@ class SafoneAPI:
                 dark_mode=dark_mode,
             )
         return await self._post_json("rayso", json=json)
+
+    async def imagine(self, text: str, limit: int = 1, version: int = 1, nsfw: bool = False):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Describe in text
+                        limit (int): Limit the results [OPTIONAL]
+                        version (int): Version of imagine [OPTIONAL]
+                        nsfw (bool): Whether include adult content [OPTIONAL]
+                Returns:
+                        Result object (List[BytesIO]): Results which you can access with filename
+
+        """
+        if isinstance(nsfw, bool):
+            nsfw = str(nsfw).lower()
+        return await self._fetch("imagine", text=text, limit=limit, version=version, nsfw=nsfw)
+
+    async def reddit(self, query: str, limit: int = 10, subreddit: list = [], nsfw: bool = False):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                        subreddit (list): Subreddits to include [OPTIONAL]
+                        nsfw (bool): Whether include adult content [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        if isinstance(subreddit, list):
+            subreddit = ",".join(map(str, subreddit))
+        if isinstance(nsfw, bool):
+            nsfw = str(nsfw).lower()
+        return await self._fetch("reddit", query=query, limit=limit, subreddit=subreddit, nsfw=nsfw)
 
     async def chatbot(self, query: str, user_id: int = 0, bot_name: str = "", bot_master: str = ""):
         """
