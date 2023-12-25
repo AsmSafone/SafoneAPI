@@ -21,6 +21,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .api import *
+class Result(dict):
+    """
+    A dotdict that represents the response from the API.
 
-__version__ = "1.0.58"
+    Args:
+        dict (dict): The dictionary to convert to a dotdict.
+
+    Returns:
+        Result (dotdict): The dotdict representation of the dictionary.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(Result, self).__init__(*args, **kwargs)
+        for key, value in self.items():
+            if isinstance(value, dict):
+                self[key] = Result(value)
+            elif isinstance(value, list):
+                self[key] = [Result(item) if isinstance(item, dict) else item for item in value]
+
+    def __getattr__(self, attr):
+        return self.get(attr, None)
+
+    def __getitem__(self, key):
+        return self.get(key, None)
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def __delattr__(self, key):
+        del self[key]
+
+    def __setitem__(self, key, value):
+        super(Result, self).__setitem__(key, value)
+
+    def __delitem__(self, key):
+        super(Result, self).__delitem__(key)

@@ -26,7 +26,6 @@ import asyncio
 import aiohttp
 import aiofiles
 from io import BytesIO
-from dotmap import DotMap
 from base64 import b64decode
 from typing import Union, List
 from pyrogram.types import Message, User
@@ -39,6 +38,8 @@ from .errors import (
     ConnectionError,
     RateLimitExceeded,
 )
+from .results import Result
+
 from aiohttp.client_exceptions import (
     ContentTypeError,
     ClientConnectorError,
@@ -69,10 +70,10 @@ class SafoneAPI:
         img_bytes.name = self._get_fname(type.split("/")[1], index)
         return img_bytes
 
-    def _parse_result(self, response: dict) -> Union[DotMap, List[BytesIO]]:
+    def _parse_result(self, response: dict) -> Union[Result, List[BytesIO]]:
         type = response.get("type")
         error = response.get("error")
-        response = DotMap(response)
+        response = Result(response)
         if not error:
             response.success = True
         if type and "/" in type:
@@ -561,6 +562,11 @@ class SafoneAPI:
                 Parameters:
                         code (str): Code to make carbon
                         kwagrs (dict): Extra args for styling
+                            - backgroundColor (str): Background color of carbon
+                            - fontFamily (str): Font family of carbon
+                            - fontSize (str): Font size of carbon
+                            - language (str): Language of carbon
+                            - theme (str): Theme of carbon
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
@@ -570,43 +576,26 @@ class SafoneAPI:
 
         return await self._post_json("carbon", json=kwargs)
 
-    async def rayso(self, code: str, title: str = "", theme: str = None, dark_mode: bool = False):
+    async def rayso(self, code: str, **kwargs):
         """
         Returns An Object.
 
                 Parameters:
-                       code (str): Rayso content
-                       title (str): Rayso title [OPTIONAL]
-                       theme (str): Rayso theme name [OPTIONAL]
-                       dark_mode (bool): Whether dark mode [OPTIONAL]
+                        code (str): Rayso content
+                        kwagrs (dict): Extra args for styling
+                            - title (str): Title of rayso
+                            - theme (str): Theme of rayso
+                            - padding (int): Padding of rayso
+                            - language (str): Language of rayso
+                            - darkMode (bool): Whether dark mode or not
                 Returns:
                         Result object (BytesIO): Results which you can access with filename
 
         """
-        json = dict(
-                code=code,
-                title=title,
-                theme=theme,
-                dark_mode=dark_mode,
-            )
-        return await self._post_json("rayso", json=json)
+        if "code" not in kwargs:
+            kwargs["code"] = code
 
-    async def imagine(self, text: str, limit: int = 1, version: int = 1, nsfw: bool = False):
-        """
-        Returns An Object.
-
-                Parameters:
-                        text (str): Describe in text
-                        limit (int): Limit the results [OPTIONAL]
-                        version (int): Version of imagine [OPTIONAL]
-                        nsfw (bool): Whether include adult content [OPTIONAL]
-                Returns:
-                        Result object (List[BytesIO]): Results which you can access with filename
-
-        """
-        if isinstance(nsfw, bool):
-            nsfw = str(nsfw).lower()
-        return await self._fetch("imagine", text=text, limit=limit, version=version, nsfw=nsfw)
+        return await self._post_json("rayso", json=kwargs)
 
     async def reddit(self, query: str, limit: int = 10, subreddit: list = [], nsfw: bool = False):
         """
@@ -1307,6 +1296,24 @@ class SafoneAPI:
 
         """
         return await self._fetch("logo", text=text, color=color, keyword=keyword, limit=limit, version=version)
+
+    async def imagine(self, prompt: str, model: str = "", limit: int = 1, version: int = 1, nsfw: bool = False):
+        """
+        Returns An Object.
+
+                Parameters:
+                        prompt (str): Describe in text
+                        model (str): Model name [OPTIONAL]
+                        limit (int): Limit the results [OPTIONAL]
+                        version (int): Version of imagine [OPTIONAL]
+                        nsfw (bool): Whether include adult content [OPTIONAL]
+                Returns:
+                        Result object (List[BytesIO]): Results which you can access with filename
+
+        """
+        if nsfw:
+            return await self._fetch("imagine/nsfw", prompt=prompt, model=model, limit=limit)
+        return await self._fetch("imagine", prompt=prompt, limit=limit, version=version)
 
     async def webshot(self, url: str, width: int = 1920, height: int = 1080, delay: float = 0.1, full: bool = False):
         """

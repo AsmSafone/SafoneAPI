@@ -22,35 +22,64 @@ SOFTWARE.
 """
 
 class BaseError(Exception):
-    message = "An error occurred"
+    """
+    Base class for all exceptions raised by this library.
+
+    Attributes:
+        message (str): The error message.
+        error_message (str): The error message.
+        success (bool): The success status of the request.
+    """
+    message = "An error occurred!"
 
     def __init__(self, error=None):
         self.success = False
         self.error_message = error or self.message
 
     def __str__(self):
-        return self.message
+        return self.error_message
+    
+    def __repr__(self):
+        return f"<{self.__class__.__name__} error_message='{self.error_message}'>"
 
 
 class TimeoutError(BaseError):
+    """
+    Raised when a request times out.
+    """
     message = "Request Timeout, Please try again later"
 
 
 class RateLimitExceeded(BaseError):
+    """
+    Raised when the rate limit is exceeded.
+    """
     message = "Rate Limit Exceeded, Please try again later"
 
 
 class InvalidRequest(BaseError):
+    """
+    Raised when an invalid request is made.
+    """
     message = "Invalid Request, Please read docs: https://api.safone.dev/redoc"
 
 
 class InvalidContent(BaseError):
+    """
+    Raised when the content of the response is invalid.
+    """
     message = "Invalid Content, Please report this: https://api.safone.dev/report"
 
 
 class GenericApiError(BaseError):
+    """
+    Raised when the API returns an error that is not handled by this library.
+    """
     message = "Api Call Failed, Please report this: https://api.safone.dev/report"
 
 
 class ConnectionError(BaseError):
+    """
+    Raised when a connection error occurs.
+    """
     message = "Failed to communicate server, Please report this: https://api.safone.dev/report"
