@@ -199,6 +199,16 @@ class SafoneAPI:
         """
         return await self._fetch("joke")
 
+    async def riddle(self):
+        """
+        Returns An Object.
+
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("riddle")
+
     async def meme(self):
         """
         Returns An Object.
@@ -246,6 +256,18 @@ class SafoneAPI:
         async with aiofiles.open(file, mode="rb") as f:
             file = await f.read()
         return await self._post_data("shazam", data={"media": file})
+
+    async def insult(self, name: str = ""):
+        """
+        Returns An Object.
+
+                Parameters:
+                        name (str): Name to insult [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("insult", name=name)
 
     async def quote(self, type: str = ""):
         """
