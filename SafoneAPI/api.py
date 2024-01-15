@@ -1,6 +1,6 @@
 """
 SafoneAPI v1.0
-Copyright (c) 2023 AsmSafone
+Copyright (c) 2024 AsmSafone
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -652,17 +652,18 @@ class SafoneAPI:
         """
         return await self._fetch("chatbot", query=query, user_id=user_id, bot_name=bot_name, bot_master=bot_master)
 
-    async def lyrics(self, query: str):
+    async def lyrics(self, title: str, artist: str = ""):
         """
         Returns An Object.
 
                 Parameters:
-                        query (str): Query to search
+                        title (str): Title of the song
+                        artist (str): Artist of the song [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("lyrics", query=query)
+        return await self._fetch("lyrics", title=title, artist=artist)
 
     async def wiki(self, query: str, limit: int = 10):
         """

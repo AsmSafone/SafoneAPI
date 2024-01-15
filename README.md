@@ -62,16 +62,15 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - Bard AI Chatbot
 - Bin Info Search
 - Bing Image Search
-- Bing Image Creator
+- Background Remover
 - CC Generator
-- Carbon Imager
+- Carbon Generator
 - ChatGPT Chatbot
 - Character Search
 - Covid Info Search
 - Currency Converter
 - Country Info Search
 - Code Executor (Piston)
-- DALL-E Image Creator
 - Figlet Generator
 - Fake Info Generator
 - Google Search
@@ -80,11 +79,11 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - Grammarly Checker
 - Google Translator
 - Google Image Search
-- IMDb Search
+- IMDb Movie Search
+- Image Generator (SFW & NSFW)
 - Ip Fraud Checker
 - Internet Acronyms
-- Image Background Remover
-- LLama-2 AI
+- LLama-2 AI Chatbot
 - Logo Maker
 - Lyrics Search
 - Manga Search
@@ -93,19 +92,21 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - Note Writer
 - NSFW Detector
 - Npm Package Search
-- OCR/ Text Reader
+- OCR/Text Scanner
 - Paraphraser Tool
 - Proxy Finder (HTTP)
 - PyPi Package Search
 - Quotly Sticker
 - QR Code Generator
 - Reddit Search
-- Rayso Imager
+- Rayso Generator
 - Random Memes
 - Random Facts
 - Random Jokes
 - Random Bully
 - Random Quote
+- Random Insult
+- Random Riddle
 - Spell Checker
 - Spam Detector
 - Special Pastebin
