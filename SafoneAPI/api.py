@@ -65,10 +65,10 @@ class SafoneAPI:
     def _get_fname(self, type: str, count: int = 0) -> str:
         return f"{str(round(time.time()))}_{count}.{type}".rstrip()
 
-    def _decode_image(self, image: str, type: str, index: int) -> BytesIO:
-        img_bytes = BytesIO(b64decode(image.encode("utf-8")))
-        img_bytes.name = self._get_fname(type.split("/")[1], index)
-        return img_bytes
+    def _decode_bytes(self, file: str, type: str, index: int) -> BytesIO:
+        file_bytes = BytesIO(b64decode(file.encode("utf-8")))
+        file_bytes.name = self._get_fname(type.split("/")[1], index)
+        return file_bytes
 
     def _parse_result(self, response: dict) -> Union[Result, List[BytesIO]]:
         type = response.get("type")
@@ -76,14 +76,16 @@ class SafoneAPI:
         response = Result(response)
         if not error:
             response.success = True
-        if type and "/" in type:
+        if type and "audio" in type:
+            response = self._decode_bytes(response.audio, type, 0)
+        elif type and "image" in type:
             if isinstance(response.image, list):
                 response = [
-                    self._decode_image(image, type, idx)
+                    self._decode_bytes(image, type, idx)
                     for idx, image in enumerate(response.image)
                 ]
             else:
-                response = self._decode_image(response.image, type, 0)
+                response = self._decode_bytes(response.image, type, 0)
         return response
 
     async def _fetch(self, route, timeout=60, **params):
@@ -750,6 +752,18 @@ class SafoneAPI:
         """
         return await self._fetch("acronym", word=word)
 
+    async def recognize(self, image: str):
+        """
+        Returns An Object.
+
+                Parameters:
+                        image (str): Image url
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("recognize", image=image)
+
     async def currency(self, origin: str, target: str, amount: int):
         """
         Returns An Object.
@@ -1176,6 +1190,23 @@ class SafoneAPI:
 
         """
         return await self._fetch("spotify", query=query, limit=limit)
+
+    async def speech(self, text: str, character: str = None):
+        """
+        Returns An Object.
+
+                Parameters:
+                        text (str): Text to speech
+                        character (str): Character name [OPTIONAL]
+                Returns:
+                        Result object (BytesIO): Results which you can access with filename
+
+        """
+        if not character:
+            return await self._fetch("speech/characters")
+
+        json = dict(text=text, character=character)
+        return await self._post_json("speech", json=json)
 
     async def translate(self, text: str, source: str = "auto", target: str = "en"):
         """
