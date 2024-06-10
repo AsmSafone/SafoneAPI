@@ -283,29 +283,29 @@ class SafoneAPI:
         """
         return await self._fetch("quote", type=type)
 
-    async def truth(self, category: str = ""):
+    async def truth(self, language: str = "en"):
         """
         Returns An Object.
 
                 Parameters:
-                        category (str): Truth category [OPTIONAL]
+                        language (str): Language of question [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("truth", category=category)
+        return await self._fetch("truth", language=language)
 
-    async def dare(self, category: str = ""):
+    async def dare(self, language: str = "en"):
         """
         Returns An Object.
 
                 Parameters:
-                        category (str): Dare category [OPTIONAL]
+                        language (str): Language of task [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("dare", category=category)
+        return await self._fetch("dare", language=language)
 
     async def apps(self, query: str, limit: int = 10):
         """

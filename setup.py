@@ -6,7 +6,7 @@ import setuptools
 def read(fname, version=False):
     text = open(os.path.join(os.path.dirname(__file__), fname), encoding="utf8").read()
     if version:
-        return re.search(r'__version__ = "(.*?)"', text).group(1)
+        text = re.search(r'__version__ = "(.*?)"', text).group(1)
     return text
 
 
@@ -21,8 +21,8 @@ setuptools.setup(
     author="AsmSafone",
     author_email="asmsafone@gmail.com",
     url="https://github.com/AsmSafone/SafoneAPI",
-    keywords=["API", "SafoneAPI", "Safone_API", "Safone-API"],
-    install_requires=["dotmap", "aiohttp", "aiofiles", "pyrogram"],
+    keywords=["API", "SafoneAPI", "Safone-API", "Safone_API"],
+    install_requires=["aiohttp", "aiofiles", "pyrogram"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",

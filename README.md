@@ -80,6 +80,7 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - Google Translator
 - Google Image Search
 - IMDb Movie Search
+- Image Recognition
 - Image Generator (SFW & NSFW)
 - Ip Fraud Checker
 - Internet Acronyms
@@ -126,6 +127,7 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - Unsplash Search
 - Udemy Course Finder
 - Urban Dictionary Search
+- Voice/Speech Generator
 - Word Dictionary Search
 - Wallpaper Search
 - Wikipedia Search
