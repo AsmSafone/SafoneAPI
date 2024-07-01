@@ -233,18 +233,6 @@ class SafoneAPI:
         """
         return await self._fetch("asq", query=query)
 
-    async def llama(self, query: str):
-        """
-        Returns An Object.
-
-                Parameters:
-                        query (str): Query to ask to llama
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-
-        """
-        return await self._fetch("llama", query=query)
-
     async def shazam(self, file: str):
         """
         Returns An Object.
@@ -1227,46 +1215,6 @@ class SafoneAPI:
             )
         return await self._post_json("translate", json=json)
 
-    async def bard(self, message: Union[Message, str], dialog_messages: list = []):
-        """
-        Returns An Object.
-
-                Parameters:
-                        message (Union[Message, str]): ~pyrogram.types.Message or text
-                        dialog_messages (list): List of chat messages as dict(user, bot) [OPTIONAL]
-                Returns:
-                        Result object (str): Results which you can access with dot notation
-    
-            """
-        formated_messages = []
-
-        if isinstance(message, Message):
-            if message.command:
-                message = " ".join(message.command[1:])
-            elif message.text:
-                message = message.text.strip()
-            elif message.caption:
-                message = message.caption.strip()
-
-        for dialog_message in dialog_messages:
-            if (
-                isinstance(dialog_message, Message)
-                and dialog_message.from_user and dialog_message.text
-            ):
-                k = "bot" if dialog_message.from_user.is_bot else "user"
-                formated_messages.append({k: dialog_message.text.strip()})
-            elif isinstance(dialog_message, dict):
-                formated_messages.append(dialog_message)
-
-        if not message:
-            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
-
-        json = dict(
-                message=message,
-                dialog_messages=formated_messages,
-            )
-        return await self._post_json("bard", json=json)
-
     async def paste(self, content: str, title: str = None, language: str = None, ephemeral: bool = False):
         """
         Returns An Object.
@@ -1334,6 +1282,90 @@ class SafoneAPI:
                 args=args,
             )
         return await self._post_json("execute", json=json)
+
+    async def bard(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
+        """
+        Returns An Object.
+
+                Parameters:
+                        message (Union[Message, str]): ~pyrogram.types.Message or text
+                        chat_mode (str): Modes like 'assistant', 'code_assistant' etc [OPTIONAL]
+                        dialog_messages (list): List of chat messages as dict(user, bot) [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+    
+            """
+        formated_messages = []
+
+        if isinstance(message, Message):
+            if message.command:
+                message = " ".join(message.command[1:])
+            elif message.text:
+                message = message.text.strip()
+            elif message.caption:
+                message = message.caption.strip()
+
+        for dialog_message in dialog_messages:
+            if (
+                isinstance(dialog_message, Message)
+                and dialog_message.from_user and dialog_message.text
+            ):
+                k = "bot" if dialog_message.from_user.is_bot else "user"
+                formated_messages.append({k: dialog_message.text.strip()})
+            elif isinstance(dialog_message, dict):
+                formated_messages.append(dialog_message)
+
+        if not message:
+            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
+
+        json = dict(
+                message=message,
+                chat_mode=chat_mode,
+                dialog_messages=formated_messages,
+            )
+        return await self._post_json("bard", json=json)
+
+    async def llama(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
+        """
+        Returns An Object.
+
+                Parameters:
+                        message (Union[Message, str]): ~pyrogram.types.Message or text
+                        chat_mode (str): Modes like 'assistant', 'code_assistant' etc [OPTIONAL]
+                        dialog_messages (list): List of chat messages as dict(user, bot) [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+    
+            """
+        formated_messages = []
+
+        if isinstance(message, Message):
+            if message.command:
+                message = " ".join(message.command[1:])
+            elif message.text:
+                message = message.text.strip()
+            elif message.caption:
+                message = message.caption.strip()
+
+        for dialog_message in dialog_messages:
+            if (
+                isinstance(dialog_message, Message)
+                and dialog_message.from_user and dialog_message.text
+            ):
+                k = "bot" if dialog_message.from_user.is_bot else "user"
+                formated_messages.append({k: dialog_message.text.strip()})
+            elif isinstance(dialog_message, dict):
+                formated_messages.append(dialog_message)
+
+        if not message:
+            raise InvalidRequest("Please provide a text or ~pyrogram.types.Message")
+
+        json = dict(
+                message=message,
+                chat_mode=chat_mode,
+                dialog_messages=formated_messages,
+            )
+        return await self._post_json("llama", json=json)
 
     async def logo(self, text: str, color: str = "", keyword: str = "", limit: int = 10, version: int = 1):
         """
