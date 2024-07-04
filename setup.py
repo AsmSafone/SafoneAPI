@@ -21,6 +21,11 @@ setuptools.setup(
     author="AsmSafone",
     author_email="asmsafone@gmail.com",
     url="https://github.com/AsmSafone/SafoneAPI",
+    project_urls={
+        "Homepage": "https://api.safone.dev",
+        "Documentation": "https://api.safone.dev/docs",
+        "Issue Tracker": "https://github.com/AsmSafone/SafoneAPI/issues",
+    },
     keywords=["API", "SafoneAPI", "Safone-API", "Safone_API"],
     install_requires=["aiohttp", "aiofiles", "pyrogram"],
     classifiers=[

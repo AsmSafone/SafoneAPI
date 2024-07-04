@@ -201,6 +201,26 @@ class SafoneAPI:
         """
         return await self._fetch("joke")
 
+    async def meme(self):
+        """
+        Returns An Object.
+
+                Returns:
+                        Result object (BytesIO): Results which you can access with filename
+
+        """
+        return await self._fetch("meme")
+
+    async def excuse(self):
+        """
+        Returns An Object.
+
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("excuse")
+
     async def riddle(self):
         """
         Returns An Object.
@@ -211,15 +231,15 @@ class SafoneAPI:
         """
         return await self._fetch("riddle")
 
-    async def meme(self):
+    async def motivate(self):
         """
         Returns An Object.
 
                 Returns:
-                        Result object (BytesIO): Results which you can access with filename
+                        Result object (str): Results which you can access with dot notation
 
         """
-        return await self._fetch("meme")
+        return await self._fetch("motivate")
 
     async def asq(self, query: str):
         """
@@ -1076,6 +1096,20 @@ class SafoneAPI:
             bins = ",".join(map(str, bins))
 
         return await self._fetch("ccgen", bins=bins, limit=limit)
+
+    async def subtitle(self, query: str, limit: int = 10, language: str = "all"):
+        """
+        Returns An Object.
+
+                Parameters:
+                        query (str): Query to search
+                        limit (int): Limit the results [OPTIONAL]
+                        language (str): Language of subtitle [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("subtitle", query=query, limit=limit, language=language)
 
     async def skcheck(self, key: str):
         """
