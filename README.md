@@ -1,6 +1,6 @@
 # SafoneAPI
 
-Asynchronous Python Wrapper For SafoneAPI
+### Asynchronous Python Wrapper For SafoneAPI
 
 [![Python](http://forthebadge.com/images/badges/made-with-python.svg)](https://python.org)
 [![GitHub](https://forthebadge.com/images/badges/built-by-developers.svg)](https://github.com/)
@@ -108,8 +108,11 @@ For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](h
 - Random Quote
 - Random Insult
 - Random Riddle
+- Random Excuses
+- Random Motivation
 - Spell Checker
 - Spam Detector
+- Subtitle Search
 - Special Pastebin
 - Stripe Key Checker
 - Song Finder (Shazam)
