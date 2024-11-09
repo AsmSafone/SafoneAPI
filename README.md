@@ -47,7 +47,7 @@ from SafoneAPI import SafoneAPI
 print(help(SafoneAPI.logo))
 ```
 
-For more checkout [API Playground](https://api.safone.dev/docs) or [Read Docs](https://api.safone.dev/redoc).
+For more checkout [API Playground](https://api.safone.co/docs) or [Read Docs](https://api.safone.co/redoc).
 
 ## List of APIs
 

@@ -49,14 +49,14 @@ from aiohttp.client_exceptions import (
 class SafoneAPI:
     """
     SafoneAPI class to access all the endpoints
-    Documentation: https://api.safone.dev/docs
+    Documentation: https://api.safone.co/docs
     Support Group: https://t.me/AsmSupport
     Updates Channel: https://t.me/AsmSafone
 
     """
 
     def __init__(self, api: str = None, session: aiohttp.ClientSession = None):
-        self.api = api or "https://api.safone.dev/"
+        self.api = api or "https://api.safone.co/"
         self.session = session or aiohttp.ClientSession
 
     def _get_name(self, user: User) -> str:
