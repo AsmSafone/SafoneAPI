@@ -1,6 +1,6 @@
 """
 SafoneAPI v1.0
-Copyright (c) 2024 AsmSafone
+Copyright (c) 2025 AsmSafone
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -785,6 +785,19 @@ class SafoneAPI:
 
         """
         return await self._fetch("currency", origin=origin, target=target, amount=amount)
+
+    async def tradingview(self, symbol: str, interval: str = "1h"):
+        """
+        Returns An Object.
+
+                Parameters:
+                        symbol (str): Crypto symbol to search
+                        interval (str): Interval of trading [OPTIONAL]
+                Returns:
+                        Result object (str): Results which you can access with dot notation
+
+        """
+        return await self._fetch("tradingview", symbol=symbol, interval=interval)
 
     async def spam_scan(self, message: Union[Message, str]):
         """

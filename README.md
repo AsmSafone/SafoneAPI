@@ -12,135 +12,139 @@
 [![Contributors](https://img.shields.io/github/contributors/AsmSafone/SafoneAPI?style=for-the-badge&color=orange)](https://github.com/AsmSafone/SafoneAPI)
 
 
-## Installation
+## 📦 Installation
 
 ```sh
-$ pip install safoneapi
+pip install safoneapi
 ```
 
-## Usage
+## 🚀 Quick Start
 
-For Example, to search on github:
+Here's a simple example to get you started:
 
-```py
+```python
 import asyncio
 from SafoneAPI import SafoneAPI
-
 
 async def main():
     api = SafoneAPI()
     resp = await api.github("AsmSafone")
     print(resp.results)
 
-
 asyncio.run(main())
 ```
 
-## Documentation
+## 📖 Documentation
 
-There is no documentation as of now!
-However, you can take help from the docstrings this way:
+For detailed documentation:
 
-```py
+1. Use Python's built-in help:
+```python
 from SafoneAPI import SafoneAPI
-
 print(help(SafoneAPI.logo))
 ```
 
-For more checkout [API Playground](https://api.safone.co/docs) or [Read Docs](https://api.safone.co/redoc).
+2. Visit our online resources:
+- [API Playground](https://api.safone.co/docs)
+- [Read the Docs](https://api.safone.co/redoc)
 
-## List of APIs
+## 🛠️ Available APIs
 
-- ASQ
-- Advice
-- Astronomy
 - AI Chatbot
-- Apps Search
-- Anime Search
+- Advice
 - Anime News (MAL)
 - Anime Pics (SFW & NSFW)
+- Anime Search
+- Apps Search
+- ASQ
+- Astronomy
+- Background Remover
 - Bard AI Chatbot
 - Bin Info Search
 - Bing Image Search
-- Background Remover
-- CC Generator
 - Carbon Generator
-- ChatGPT Chatbot
+- CC Generator
 - Character Search
+- ChatGPT Chatbot
+- Code Executor (Piston)
+- Country Info Search
 - Covid Info Search
 - Currency Converter
-- Country Info Search
-- Code Executor (Piston)
-- Figlet Generator
 - Fake Info Generator
-- Google Search
+- Figlet Generator
 - Github Search
 - Global News (BBC)
-- Grammarly Checker
-- Google Translator
 - Google Image Search
-- IMDb Movie Search
-- Image Recognition
+- Google Search
+- Google Translator
+- Grammarly Checker
 - Image Generator (SFW & NSFW)
-- Ip Fraud Checker
+- Image Recognition
+- IMDb Movie Search
 - Internet Acronyms
+- Ip Fraud Checker
 - LLama-2 AI Chatbot
 - Logo Maker
 - Lyrics Search
 - Manga Search
-- Morse Code Encoder
 - Morse Code Decoder
+- Morse Code Encoder
 - Note Writer
-- NSFW Detector
 - Npm Package Search
+- NSFW Detector
 - OCR/Text Scanner
 - Paraphraser Tool
 - Proxy Finder (HTTP)
 - PyPi Package Search
-- Quotly Sticker
 - QR Code Generator
-- Reddit Search
-- Rayso Generator
-- Random Memes
-- Random Facts
-- Random Jokes
+- Quotly Sticker
 - Random Bully
-- Random Quote
-- Random Insult
-- Random Riddle
 - Random Excuses
+- Random Facts
+- Random Insult
+- Random Jokes
+- Random Memes
 - Random Motivation
-- Spell Checker
-- Spam Detector
-- Subtitle Search
-- Special Pastebin
-- Stripe Key Checker
-- Song Finder (Shazam)
+- Random Quote
+- Random Riddle
+- Rayso Generator
+- Reddit Search
 - Short Link Bypasser
 - Short Link Generator
-- Stackoverflow Search
+- Song Finder (Shazam)
+- Spam Detector
+- Special Pastebin
+- Spell Checker
 - Spotify Song Search
+- Stackoverflow Search
+- Stripe Key Checker
+- Subtitle Search
+- Telegraph File Uploader
+- Telegraph Pasting
+- Telegram Sticker Search
 - TMDb Search
 - Torrent Search
+- TradingView TA
 - Truth or Dare Game
-- Telegraph Pasting
-- Telegraph File Uploader
-- Telegram Sticker Search
 - Ubuntu Search
-- Unsplash Search
-- Udemy Course Finder
+- Udemy Course Coupon Finder
+- Unsplash Image Search
 - Urban Dictionary Search
 - Voice/Speech Generator
-- Word Dictionary Search
 - Wallpaper Search
-- Wikipedia Search
+- Weather Information
 - Website Screenshot
-- Weather Informatiom
+- Wikipedia Search
 - Xda-developer Search
-- YouTube Video Search
 - YouTube Playlist Search
+- YouTube Video Search
 
-## Note
+## 💬 Support
 
-1. I'll add more features soon.
-2. If you're stuck somewhere, [AsmSupport](https://t.me/AsmSupport) are there to help.
+Need help? Reach out to us:
+- Join our [Telegram Support Group](https://t.me/AsmSupport)
+- Open an [Issue](https://github.com/AsmSafone/SafoneAPI/issues)
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
