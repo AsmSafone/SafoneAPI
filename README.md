@@ -56,10 +56,9 @@ print(help(SafoneAPI.logo))
 - Anime Pics (SFW & NSFW)
 - Anime Search
 - Apps Search
-- ASQ
+- ASQ (Ask & Answer)
 - Astronomy
 - Background Remover
-- Bard AI Chatbot
 - Bin Info Search
 - Bing Image Search
 - Carbon Generator
@@ -74,6 +73,7 @@ print(help(SafoneAPI.logo))
 - Figlet Generator
 - Github Search
 - Global News (BBC)
+- Gemini AI Chatbot
 - Google Image Search
 - Google Search
 - Google Translator
@@ -83,7 +83,7 @@ print(help(SafoneAPI.logo))
 - IMDb Movie Search
 - Internet Acronyms
 - Ip Fraud Checker
-- LLama-2 AI Chatbot
+- LLama3 AI Chatbot
 - Logo Maker
 - Lyrics Search
 - Manga Search

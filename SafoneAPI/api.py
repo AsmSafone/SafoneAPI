@@ -1148,17 +1148,18 @@ class SafoneAPI:
         """
         return await self._fetch("spellcheck", text=text)
 
-    async def paraphrase(self, text: str):
+    async def paraphrase(self, text: str, creativity: int = 2):
         """
         Returns An Object.
 
                 Parameters:
                         text (str): Some text
+                        creativity (int): Creativity level (1-3) [OPTIONAL]
                 Returns:
                         Result object (str): Results which you can access with dot notation
 
         """
-        json = dict(text=text)
+        json = dict(text=text, creativity=creativity)
         return await self._post_json("paraphrase", json=json)
 
     async def grammarly(self, text: str):
@@ -1330,7 +1331,7 @@ class SafoneAPI:
             )
         return await self._post_json("execute", json=json)
 
-    async def bard(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
+    async def gemini(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
         """
         Returns An Object.
 
@@ -1370,7 +1371,7 @@ class SafoneAPI:
                 chat_mode=chat_mode,
                 dialog_messages=formated_messages,
             )
-        return await self._post_json("bard", json=json)
+        return await self._post_json("gemini", json=json)
 
     async def llama(self, message: Union[Message, str], chat_mode: str = None, dialog_messages: list = []):
         """
